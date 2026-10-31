@@ -1,19 +1,11 @@
-<p align="center" >
-  <a href="https://bazzite.gg/" >
-    <picture>
-      <source srcset="repo_content/Bazzite_Light.svg" media="(prefers-color-scheme: dark)" >
-      <img src="repo_content/Bazzite.svg" alt="Bazzite" loading="lazy" />
-    </picture>
-  </a>
-</p>
+<h1 align="center">Pyrite</h1>
 
-[![build-bazzite](https://github.com/ublue-os/bazzite/actions/workflows/build.yml/badge.svg)](https://github.com/ublue-os/bazzite/actions/workflows/build.yml) [![build-bazzite-isos](https://github.com/ublue-os/bazzite/actions/workflows/build_iso.yml/badge.svg)](https://github.com/ublue-os/bazzite/actions/workflows/build_iso.yml) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ublue-os/bazzite/badge)](https://scorecard.dev/viewer/?uri=github.com/ublue-os/bazzite) [![LFX Health Score](https://insights.linuxfoundation.org/api/badge/health-score?project=ublue-os-bazzite)](https://insights.linuxfoundation.org/project/ublue-os-bazzite) [![LFX Active Contributors](https://insights.linuxfoundation.org/api/badge/active-contributors?project=ublue-os-bazzite)](https://insights.linuxfoundation.org/project/ublue-os-bazzite) [<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ublue-os/countme/main/badge-endpoints/bazzite.json&label=Bazzite&logo=data:image%2Fpng;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC%2FxhBQAAAAFzUkdCAdnJLH8AAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAuIwAALiMBeKU%2FdgAAAAd0SU1FB%2BkHDxYoOpQmhHYAAAXkSURBVFjDnZdtbJvVFYCfc%2B%2BN7diJ80WX1mndtFRtaUfpB7QUSsXHqgwJCSGN%2FVoHA23Aj4HYpqBJTJs0TdqfSds0aZXGtA9tP6ZuEkj7MYlpGisUsGj5aFII0JaVGpI0oUkaJ44%2F3rMfr%2F3Gr2PHZdeydPz61XnOOfd83CvULTN0fI9Rc49Frrcq9tF7BhhIdWEUBOH1zDiZszmsCg6DVSlYlY%2BdykWLef30ibvO8zmWC6Sh4xsEfisqRwyCVf8rSAA3gKk8t0hY9o3h1kMvfeTU%2FMmoHPvPyUPZVgaYCjwt8IpROWIxuBrFUWvYs7WL23b1MLg2juA%2Ft1p5b6U8aFSedci5Iwdf%2FcWXb30t2dIAgT8YlQ0WCcGdGm65oYvN6ztIrYmzZ0cP63rbVoNXtkawaqJW5UmHjN5%2FIHOoqQEydPw2o3JnFVgLtyrEY5ZY1DLQH0OA%2Ft7ItcBrZFlv1fzrwf2nHmpogFW5txnc4udAR7tFFWJR23QLmsD930ibU%2Fn9125%2B6%2BhKAzBrmsGtGkD4bKbIJ%2BN58vkyosuQa4RXttVgkd88su%2Bd%2FfURWKGs1kNRQP2XBb8aGgNbwnEqUafmz0%2FsHYkHZfiNu1OIChFruGlLJ90dbUgFJwipdR0BHOD2g%2F3cuLMneAMPPs0WmMwWMQiiQmHB48rlEpfOLjUyZItV%2BS7wYwD56R%2FHjony2M3buhkcSBBpM7RHLVfnSyHPA2A1EgLJpGN%2BtowqvJmZZX6m7BtR6RdLC2VGMleZHCvWGzJnIf2zt7bPGqNgEHq7IjgrpNbE6Gh3q8L98hGSyTZ6%2BtoA6O52IbhBiMcdBw73MvjFWH0UklbNUV9PpcNdns5TLkN2PM%2FcfHFVuADqwZXpIp9NFVFPmZkqheBV2Yqwa38XnT02iEIl774CIF%2F%2F3ivHROUxg7Bzc5x41PpI9ZXs3b2G%2Fv5EAB85M814Nl%2FJEP8z%2FWmJuSnPByL09kVIpdpDhmTP5XnvxQU%2FUX1D1Hh0un%2Bfmgsy%2F%2BQb8yuy%2Bicbk6ztTwSev%2F%2FuPP%2F462yjDK%2BR8%2By83WPrzo4gItf1R7C6WIVjVcQgN5pW9VwbdirKVof78oVMPrQdiXZXC8f5%2Bnc4W5lizWpbEPr6IsTjlunJAqKt4RZBSuFcQAnBLQajYp1Tf6y6mhFcKwNcnS3hrJDPewAt4VaFvg1tNUkJ%2BUUvBK%2FqdlalZGu6l6uTc3MepaJyeaKAesqViXJLuFPD2nQkgAvC0ryugAOesypjQeuta6NWhQ%2FOLtLblSPR4ZjMLrEwoy3hToTUxlgANyrMjZfq4QDvO4c5Y1bp4YKQ%2FWgJQ2G5tkP1HIZbhK13xIm32wCOB1MjpXo4CmeMUTlpkYVmA6TaKQN4MI6lLqt9ed32CJu2xQO4ANOXingzK44Cp54ZTc%2BYN16%2Bs%2BBU%2Ft4ssaoNqVpSHQnXFL75QIyb7khizTLcK8LFE0uNziJ%2FCw6lTs2vDPLVRnubmy1jUssltWlLgqkLJeazflZHo4aB7VEGt8Xp6nYhzw3CucwCxRmthy8Bz9W2d44cPPmSVXO4PgrdPY6hB74QeOWPXFi8WsYaIZFwoWyvhV98O0%2F25UIj7385PJp%2BavlU7Nf2ty1SrI%2FC4rRy8dxCeMggdHa6AC51cMpwPrPYDD4B%2FDDgVoUPLz03sWPgW0Wr5kv1ezt9oUh3vyOZbAt52Eiemywz9s9FZsbKzQ7CDw6PpkcgPO6X%2F91%2F6ndW5eFGSbZpd4zN2xN0Jl0IXsgps5NFLr9bInfeW6l0eT09PJr%2BeeObUTUknn7TYa1FjtZne%2FZ0gYnTJeJJS2efxXjCwseKFMD5vX01%2BPfr4Q0jUF2P7HvnB07NjyxilmdE7eAKy6vAc8Cjw6PpvzT6U1a7Nj2%2Bd2SfU%2FNrq3LL%2Fwl%2FAXhqeDT932YMuZYb7Hd2v3efU%2FOEVRlyGNsCngOer5RappVu%2BTxX6Wd3fdht1Ry2Knscst6qSfiTnhzwAfCmoieeGd24dK06%2FwcT97y6eGrxwQAAAABJRU5ErkJggg%3D%3D">](https://github.com/ublue-os/bazzite) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ublue-os/bazzite)
+> [!NOTE]
+> **Pyrite is an experimental fork of [Bazzite](https://github.com/ublue-os/bazzite), and is not an official Bazzite project.** Pyrite does not publish its own images or ISOs yet, so the download links and `rpm-ostree rebase` commands below install upstream Bazzite. The website, documentation, and community links also belong to Bazzite.
+
+[![build-pyrite](https://github.com/lutvzn/pyrite/actions/workflows/build.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build.yml) [![build-pyrite-isos](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lutvzn/pyrite/badge)](https://scorecard.dev/viewer/?uri=github.com/lutvzn/pyrite) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lutvzn/pyrite)
 
 # [🇺🇸](https://github.com/ublue-os/bazzite/blob/main/README.md) [🇪🇸](https://github.com/ublue-os/bazzite/blob/main/README-SPA.md) [🇮🇩](https://github.com/ublue-os/bazzite/blob/main/README-ID.md) [🇨🇳](https://github.com/ublue-os/bazzite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/ublue-os/bazzite/blob/main/README-FR.md) [🇧🇷](https://github.com/ublue-os/bazzite/blob/main/README-BR.md) [🇳🇱](https://github.com/ublue-os/bazzite/blob/main/README-NL.md) [🇷🇺](https://github.com/ublue-os/bazzite/blob/main/README-RU.md) [🇩🇪](https://github.com/ublue-os/bazzite/blob/main/README-DE.md) [🇸🇪](https://github.com/ublue-os/bazzite/blob/main/README-SV.md) [🇹🇼](https://github.com/ublue-os/bazzite/blob/main/README-ZH-TW.md) [🇹🇷](https://github.com/ublue-os/bazzite/blob/main/README-TR.md)
-
-<p align="center" >
-  <a href="https://download.bazzite.gg/"><img src="/repo_content/download.png?raw=true" alt="Download Bazzite" loading="lazy" /></a>
-</p>
 
 ---
 
@@ -43,11 +35,11 @@
 
 ## About & Features
 
-[Please see our website](https://bazzite.gg/) for a newcomer-friendly explanation of Bazzite. This readme will cover everything in-depth.
+[Please see the Bazzite website](https://bazzite.gg/) for a newcomer-friendly explanation of Bazzite, which Pyrite is based on. This readme will cover everything in-depth.
 
-[Bazzite](https://bazzite.gg/) is a custom [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) image built with [cloud native](https://universal-blue.org/#cloud-native) technology that brings the best of Linux gaming to **all of your devices - including your favorite handheld**.
+Pyrite is a fork of [Bazzite](https://bazzite.gg/), a custom [Fedora Atomic](https://fedoraproject.org/atomic-desktops/) image built with [cloud native](https://universal-blue.org/#cloud-native) technology that brings the best of Linux gaming to **all of your devices - including your favorite handheld**.
 
-Bazzite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fedora](https://fedoraproject.org/) technology, which means expanded hardware support and built in drivers are included. Additionally, Bazzite adds the following features:
+Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fedora](https://fedoraproject.org/) technology, which means expanded hardware support and built in drivers are included. Additionally, Pyrite adds the following features:
 
 - Uses the [OGC kernel](https://www.github.com/OpenGamingCollective/linux)
 - HDR and VRR available by default.
@@ -74,10 +66,10 @@ Common variant available as `bazzite`, suitable for desktop computers.
 - Automatic updates for the OS, Flatpaks, and more - powered by [uupd](https://github.com/ublue-os/uupd) and [topgrade](https://github.com/topgrade-rs/topgrade).
 
 > [!IMPORTANT]
-> **ISOs can be downloaded from our [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
+> **Bazzite ISOs can be downloaded from the Bazzite [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
 
 Rebase from an existing upstream Fedora Atomic to this image if you want **Open Source GPU Drivers**:
-(Please note: Mesa's Open Source option for NVIDIA GPUs, NVK is still prone to errors at the time of writing, for any issues relating to NVK [please submit a report with Mesa]([url](https://docs.mesa3d.org/bugs.html)), not Ublue/Bazzite)
+(Please note: Mesa's Open Source option for NVIDIA GPUs, NVK is still prone to errors at the time of writing, for any issues relating to NVK [please submit a report with Mesa]([url](https://docs.mesa3d.org/bugs.html)), not Ublue/Bazzite/Pyrite)
 
 ```bash
 rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite:stable
@@ -107,7 +99,7 @@ Variant designed for usage as an alternative to SteamOS on the Steam Deck, and f
 - Option to install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader), [EmuDeck](https://www.emudeck.com/), [RetroDECK](https://retrodeck.net/), and [ProtonUp-Qt](https://davidotek.github.io/protonup-qt/), among numerous other useful packages on installation.
 - Custom update system allows for the OS, Flatpaks, and more to be updated directly from the Game mode UI powered by [uupd](https://github.com/ublue-os/uupd) and [topgrade](https://github.com/topgrade-rs/topgrade).
 - Built in support for Windows dual-boot thanks to Fedora's installation of GRUB being left intact.
-- Update break something? Easily roll back to the previous version of Bazzite thanks to `rpm-ostree`'s rollback functionality. You can even select previous images at boot.
+- Update break something? Easily roll back to the previous version of Pyrite thanks to `rpm-ostree`'s rollback functionality. You can even select previous images at boot.
 - Steam and Lutris preinstalled on the image as layered packages.
 - Uses ZRAM<sub><sup>(4GB)</sup></sub> with the LZ4 compression algorithm by default.
 - [LAVD](https://crates.io/crates/scx_lavd) and [BORE](https://github.com/firelzrd/bore-scheduler) CPU Schedulers for smooth and responsive gameplay.
@@ -122,7 +114,7 @@ Variant designed for usage as an alternative to SteamOS on the Steam Deck, and f
 - More information can be found [here](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Steam_Gaming_Mode/) on the Bazzite Steam Deck images.
 
 > [!IMPORTANT]
-> **ISOs can be downloaded from our [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
+> **Bazzite ISOs can be downloaded from the Bazzite [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
 
 Rebase from an existing upstream Fedora Atomic to this image:
 
@@ -132,7 +124,7 @@ rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite-deck:stabl
 
 #### Alternative Handhelds
 
-Please refer to our [Handheld Wiki](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Handheld_Wiki/) for required setting changes and Decky Loader plugins for Steam Gaming Mode on your specific Handheld.
+Please refer to the Bazzite [Handheld Wiki](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Handheld_Wiki/) for required setting changes and Decky Loader plugins for Steam Gaming Mode on your specific Handheld.
 
 ### GNOME
 
@@ -145,7 +137,7 @@ Builds with the GNOME desktop environment are available in both desktop and deck
 - Automatic updates for the [Firefox GNOME theme](https://github.com/rafaelmardojai/firefox-gnome-theme) and [Thunderbird GNOME theme](https://github.com/rafaelmardojai/thunderbird-gnome-theme). <sup><sub>(If installed)</sub></sup>
 
 > [!IMPORTANT]
-> **ISOs can be downloaded from our [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
+> **Bazzite ISOs can be downloaded from the Bazzite [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
 
 Rebase from an existing upstream Fedora Atomic to this image:
 
@@ -175,7 +167,7 @@ rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite-deck-gnome
 - Flathub is enabled by default.
 - [`ujust`](https://github.com/casey/just) commands for convenience.
 - Multi-media codecs out of the box.
-- Rollback Bazzite from any build within the last 90 days.
+- Rollback Pyrite from any build within the last 90 days.
 
 #### Features from Fedora Linux (Kinoite & Silverblue)
 
@@ -188,13 +180,13 @@ rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite-deck-gnome
 
 ## Why
 
-Bazzite started as a project to resolve some of the issues that plague SteamOS, mainly out of date packages (despite an Arch base) and the lack of a functional package manager.
+Bazzite, the project Pyrite is forked from, started as a project to resolve some of the issues that plague SteamOS, mainly out of date packages (despite an Arch base) and the lack of a functional package manager.
 
-Despite this project also being image-based, you are able to install any Fedora package straight from the command line. These packages will persist across updates <sub><sup>(So go ahead and install that obscure VPN software you spent an hour trying to get working in SteamOS)</sup></sub>. Additionally, Bazzite is updated multiple times a week with packages from upstream Fedora, giving you the best possible performance and latest features - all on a stable base.
+Despite this project also being image-based, you are able to install any Fedora package straight from the command line. These packages will persist across updates <sub><sup>(So go ahead and install that obscure VPN software you spent an hour trying to get working in SteamOS)</sup></sub>. Additionally, Pyrite is updated multiple times a week with packages from upstream Fedora, giving you the best possible performance and latest features - all on a stable base.
 
-Bazzite ships with the latest Linux kernel and SELinux enabled by default with full support for secure boot <sub><sup>(Run `ujust enroll-secure-boot-key` and enter the password `universalblue` if prompted to enroll our key)</sup></sub> and disk encryption, making this a sensible solution for general computing. <sup><sub>(Yes, you can print from Bazzite)</sub></sup>
+Pyrite ships with the latest Linux kernel and SELinux enabled by default with full support for secure boot <sub><sup>(Run `ujust enroll-secure-boot-key` and enter the password `universalblue` if prompted to enroll our key)</sup></sub> and disk encryption, making this a sensible solution for general computing. <sup><sub>(Yes, you can print from Pyrite)</sub></sup>
 
-Read the [FAQ](https://docs.bazzite.gg/General/FAQ/) for details on what makes Bazzite stand out from other Linux based operating systems.
+Read the Bazzite [FAQ](https://docs.bazzite.gg/General/FAQ/) for details on what makes it stand out from other Linux based operating systems.
 
 ## Showcase
 
@@ -241,21 +233,21 @@ If asked for a password, use `universalblue`.
 
 ## Contributor Metrics
 
-![Bazzite](https://repobeats.axiom.co/api/embed/86b500d79c613015ad16f56df76c8e13f3fd98ae.svg "Repobeats analytics image")
+[![Pyrite contributors](https://contrib.rocks/image?repo=lutvzn/pyrite)](https://github.com/lutvzn/pyrite/graphs/contributors)
 
 ## Star History
 
-<a href="https://star-history.com/#ublue-os/bazzite&Date" >
+<a href="https://star-history.com/#lutvzn/pyrite&Date" >
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ublue-os/bazzite&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ublue-os/bazzite&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ublue-os/bazzite&type=Date" loading="lazy" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lutvzn/pyrite&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lutvzn/pyrite&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lutvzn/pyrite&type=Date" loading="lazy" />
   </picture>
 </a>
 
 ## Special Thanks
 
-Bazzite is a community effort and wouldn't exist without everyone's support. Below are some of the people who've helped us along the way:
+Pyrite builds on Bazzite, a community effort that wouldn't exist without everyone's support. Below are some of the people who've helped Bazzite along the way:
 
 - [amelia.svg](https://bsky.app/profile/ameliasvg.bsky.social) - For creating our logo and overall branding.
 - [SuperRiderTH](https://github.com/SuperRiderTH) - For creating our Steam game mode startup video.
@@ -269,9 +261,9 @@ Bazzite is a community effort and wouldn't exist without everyone's support. Bel
 
 ## Build Your Own
 
-Bazzite is built entirely via GitHub Actions. Creating your own custom version of it is as easy as forking this repository, adding a private signing key, and enabling the fork's GitHub Actions. Running the `Build Bazzite` workflow will then generate custom images for all variants of Bazzite.
+Pyrite is built entirely via GitHub Actions. Creating your own custom version of it is as easy as forking this repository, adding a private signing key, and enabling the fork's GitHub Actions. Running the `Build Bazzite` workflow will then generate custom images for all variants of Pyrite.
 
-If you only want to generate images for the variants of Bazzite you are using, edit `.github/workflows/build.yml` to comment out the variants you do not wish to build in the `push-ghcr` job's `strategy`'s `matrix` list.
+If you only want to generate images for the variants of Pyrite you are using, edit `.github/workflows/build.yml` to comment out the variants you do not wish to build in the `push-ghcr` job's `strategy`'s `matrix` list.
 
 We also ship a config for the popular [pull app](https://github.com/apps/pull) if you'd like to keep your fork in sync with upstream. Enable this app on your repo to keep track of Bazzite changes while also making your own modifications.
 
@@ -284,4 +276,4 @@ We also ship a config for the popular [pull app](https://github.com/apps/pull) i
 
 ## Join The Community
 
-You can find us on the [Bazzite Discord](https://discord.gg/f8MUghG5PB)  View the [archive](https://www.answeroverflow.com/c/1072614816579063828/1143023993041993769) of support threads without an account.
+The Bazzite community can be found on the [Bazzite Discord](https://discord.gg/f8MUghG5PB). View the [archive](https://www.answeroverflow.com/c/1072614816579063828/1143023993041993769) of support threads without an account.
