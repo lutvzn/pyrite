@@ -96,6 +96,8 @@ command:
       echo "OK: $target is labeled $label"
       '
     exit-status: 0
+    # find walks the whole ostree object store, which can pass goss's 10s default on a busy runner.
+    timeout: 60000
     stdout:
       - "/^(OK|SKIP):/"
 
