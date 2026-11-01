@@ -8,6 +8,7 @@
 - [ ] Blocked kernel modules: confirm nothing needs them, especially `sctp`.
 
 - [ ] Hyprland: log in on a GNOME image, then check screen sharing and file pickers. Also check that KDE and GNOME's own sessions still use their usual portals.
+- [ ] Noctalia: log in to Hyprland and check that the bar starts, and that notifications, the lock screen and the battery and power widgets work. Try Super+R and the volume, mic, brightness and media keys, including on the lock screen. Also check that it doesn't start in KDE or GNOME sessions.
 
 ## Brave Origin
 

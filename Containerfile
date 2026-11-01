@@ -422,7 +422,9 @@ RUN --mount=type=cache,dst=/var/cache \
 # is removed again so it can't replace Fedora packages later. Its priority beats
 # Fedora's older hypr* libraries. The system-wide config only applies until the
 # user adds ~/.config/hypr/hyprland.lua, which Hyprland looks for first. It adds
-# Super+B to open the default browser, which the stock config has no bind for.
+# Super+B to open the default browser, which the stock config has no bind for, and
+# starts the Noctalia shell, which comes from Fedora and only runs under Hyprland.
+# Noctalia also takes over the launcher and the volume, brightness and media keys.
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=cache,dst=/var/log \
@@ -438,19 +440,31 @@ RUN --mount=type=cache,dst=/var/cache \
             hyprland-uwsm \
             hyprland-guiutils \
             xdg-desktop-portal-hyprland \
-            hyprlauncher \
-            playerctl \
-            brightnessctl && \
+            noctalia && \
         test -x /usr/bin/foot && \
         test -x /usr/bin/Hyprland && \
-        test -x /usr/bin/hyprlauncher && \
+        test -x /usr/bin/noctalia && \
         mkdir -p /etc/xdg/hypr && \
         sed -e 's/^local terminal .*/local terminal    = "foot"/' \
+            -e 's/^local menu .*/local menu        = "noctalia msg panel-toggle launcher"/' \
             -e '/^hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))$/a hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("gtk-launch \\"$(xdg-settings get default-web-browser)\\""))' \
+            -e '/^-- end)$/a hl.on("hyprland.start", function() hl.exec_cmd("noctalia") end)' \
+            -e '/^hl.bind("XF86AudioRaiseVolume"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-up")/' \
+            -e '/^hl.bind("XF86AudioLowerVolume"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-down")/' \
+            -e '/^hl.bind("XF86AudioMute"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-mute")/' \
+            -e '/^hl.bind("XF86AudioMicMute"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg mic-mute")/' \
+            -e '/^hl.bind("XF86MonBrightnessUp"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg brightness-up")/' \
+            -e '/^hl.bind("XF86MonBrightnessDown"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg brightness-down")/' \
+            -e '/^hl.bind("XF86AudioNext"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg media next")/' \
+            -e '/^hl.bind("XF86AudioPrev"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg media previous")/' \
+            -e '/^hl.bind("XF86Audio\(Pause\|Play\)"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg media toggle")/' \
+            -e '/^-- Requires playerctl$/d' \
             /usr/share/hypr/hyprland.lua > /etc/xdg/hypr/hyprland.lua && \
         grep -q '^local terminal    = "foot"$' /etc/xdg/hypr/hyprland.lua && \
-        grep -q '^local menu        = "hyprlauncher"$' /etc/xdg/hypr/hyprland.lua && \
         grep -q 'mainMod .. " + B"' /etc/xdg/hypr/hyprland.lua && \
+        test "$(grep -c '^hl.on("hyprland.start"' /etc/xdg/hypr/hyprland.lua)" -eq 1 && \
+        test "$(grep -c 'noctalia msg' /etc/xdg/hypr/hyprland.lua)" -eq 11 && \
+        ! grep -qE 'wpctl|brightnessctl|playerctl|hyprlauncher' /etc/xdg/hypr/hyprland.lua && \
         echo foot.desktop > /etc/xdg/hyprland-xdg-terminals.list && \
         dnf5 -y copr remove lionheartp/Hyprland \
     ; fi && \
