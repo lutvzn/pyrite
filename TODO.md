@@ -8,6 +8,7 @@
 - [ ] Blocked kernel modules: confirm nothing needs them, especially `sctp`.
 
 - [ ] Hyprland: log in on a GNOME image, then check screen sharing and file pickers. Also check that KDE and GNOME's own sessions still use their usual portals.
+- [ ] Hyprland passwords: log out and back in on KDE and GNOME images. Check that `busctl --user status org.freedesktop.secrets` finds the service without a password prompt, that a saved password survives a new login, and that a Flatpak app can save one too. Also check the uwsm session.
 - [ ] Noctalia: log in to Hyprland and check that the bar starts, and that notifications, the lock screen and the battery and power widgets work. Try Super+R and the volume, mic, brightness and media keys, including on the lock screen. Also check that it doesn't start in KDE or GNOME sessions.
 
 ## Brave Origin
