@@ -1,7 +1,7 @@
 # run with --cap-add sys_admin --security-opt label=disable
 
-ARG BASE_IMAGE=${BASE_IMAGE:-ghcr.io/ublue-os/bazzite:latest}
-ARG INSTALL_IMAGE_PAYLOAD=${INSTALL_IMAGE_PAYLOAD:-ghcr.io/ublue-os/bazzite:latest}
+ARG BASE_IMAGE=${BASE_IMAGE:-ghcr.io/lutvzn/pyrite:latest}
+ARG INSTALL_IMAGE_PAYLOAD=${INSTALL_IMAGE_PAYLOAD:-ghcr.io/lutvzn/pyrite:latest}
 ARG FLATPAK_DIR_SHORTNAME=${FLATPAK_DIR_SHORTNAME:-kde_flatpaks}
 
 

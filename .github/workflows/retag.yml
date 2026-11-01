@@ -53,13 +53,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           PREFIX: ghcr.io/${{ steps.repo_owner_case.outputs.lowercase }}/
           TAG_MAPPINGS: |-
-            bazzite:${{ inputs.old_tag }}                           => bazzite:latest,stable,${{ env.ver }}
-            bazzite-deck:${{ inputs.old_tag }}                      => bazzite-deck:latest,stable,${{ env.ver }}
-            bazzite-deck-gnome:${{ inputs.old_tag }}                => bazzite-deck-gnome:latest,stable,${{ env.ver }}
-            bazzite-deck-nvidia:${{ inputs.old_tag }}               => bazzite-deck-nvidia:latest,stable,${{ env.ver }}
-            bazzite-deck-nvidia-gnome:${{ inputs.old_tag }}         => bazzite-deck-nvidia-gnome:latest,stable,${{ env.ver }}
-            bazzite-gnome:${{ inputs.old_tag }}                     => bazzite-gnome:latest,stable,${{ env.ver }}
-            bazzite-gnome-nvidia:${{ inputs.old_tag }}              => bazzite-gnome-nvidia:latest,stable,${{ env.ver }}
-            bazzite-gnome-nvidia-open:${{ inputs.old_tag }}         => bazzite-gnome-nvidia-open:latest,stable,${{ env.ver }}
-            bazzite-nvidia:${{ inputs.old_tag }}                    => bazzite-nvidia:latest,stable,${{ env.ver }}
-            bazzite-nvidia-open:${{ inputs.old_tag }}               => bazzite-nvidia-open:latest,stable,${{ env.ver }}
+            pyrite:${{ inputs.old_tag }}                           => pyrite:latest,stable,${{ env.ver }}
+            pyrite-deck:${{ inputs.old_tag }}                      => pyrite-deck:latest,stable,${{ env.ver }}
+            pyrite-deck-gnome:${{ inputs.old_tag }}                => pyrite-deck-gnome:latest,stable,${{ env.ver }}
+            pyrite-deck-nvidia:${{ inputs.old_tag }}               => pyrite-deck-nvidia:latest,stable,${{ env.ver }}
+            pyrite-deck-nvidia-gnome:${{ inputs.old_tag }}         => pyrite-deck-nvidia-gnome:latest,stable,${{ env.ver }}
+            pyrite-gnome:${{ inputs.old_tag }}                     => pyrite-gnome:latest,stable,${{ env.ver }}
+            pyrite-gnome-nvidia:${{ inputs.old_tag }}              => pyrite-gnome-nvidia:latest,stable,${{ env.ver }}
+            pyrite-gnome-nvidia-open:${{ inputs.old_tag }}         => pyrite-gnome-nvidia-open:latest,stable,${{ env.ver }}
+            pyrite-nvidia:${{ inputs.old_tag }}                    => pyrite-nvidia:latest,stable,${{ env.ver }}
+            pyrite-nvidia-open:${{ inputs.old_tag }}               => pyrite-nvidia-open:latest,stable,${{ env.ver }}

@@ -32,7 +32,7 @@ ARG FEDORA_VERSION="${FEDORA_VERSION:-44}"
 ARG ARCH="${ARCH:-x86_64}"
 
 ARG BASE_IMAGE="${BASE_IMAGE:-ghcr.io/ublue-os/${BASE_IMAGE_NAME}-main:${FEDORA_VERSION}}"
-ARG NVIDIA_BASE="${NVIDIA_BASE:-bazzite}"
+ARG NVIDIA_BASE="${NVIDIA_BASE:-pyrite}"
 ARG KERNEL_FLAVOR="${KERNEL_FLAVOR:-ogc}"
 ARG KERNEL_VERSION="${KERNEL_VERSION:-7.0.9-ogc3.2.fc${FEDORA_VERSION}.${ARCH}}"
 ARG NVIDIA_FLAVOR="${NVIDIA_FLAVOR:-nvidia-open}"
@@ -49,9 +49,9 @@ COPY build_files /
 # DESKTOP BUILDS
 ################
 
-FROM ${BASE_IMAGE} AS bazzite
+FROM ${BASE_IMAGE} AS pyrite
 
-ARG IMAGE_NAME="${IMAGE_NAME:-bazzite}"
+ARG IMAGE_NAME="${IMAGE_NAME:-pyrite}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR:-ublue-os}"
 ARG IMAGE_BRANCH="${IMAGE_BRANCH:-stable}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-kinoite}"
@@ -374,6 +374,24 @@ RUN --mount=type=cache,dst=/var/cache \
     setfattr -n user.component -v "winetricks" /usr/bin/winetricks && \
     /ctx/cleanup
 
+# Install Brave Origin as a system package. The RPM installs to /opt, which links
+# to /var/opt on this image and is wiped by finalize, so move it into /usr/lib/opt.
+# usr/lib/tmpfiles.d/pyrite-brave.conf links it back at boot.
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/tmp \
+    dnf5 -y config-manager addrepo --overwrite --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo && \
+    mkdir -p /var/opt /usr/lib/opt && \
+    dnf5 -y install --setopt=install_weak_deps=False brave-origin && \
+    mv /var/opt/brave.com /usr/lib/opt/brave.com && \
+    test -x /usr/lib/opt/brave.com/brave-origin/brave && \
+    test -u /usr/lib/opt/brave.com/brave-origin/chrome-sandbox && \
+    test -s /usr/lib/opt/brave.com/brave-origin/LICENSE && \
+    rm -f /etc/yum.repos.d/brave-browser.repo && \
+    /ctx/cleanup
+
 # Install ujust-picker from GitHub releases
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/cache/libdnf5 \
@@ -437,6 +455,18 @@ RUN --mount=type=cache,dst=/var/cache \
         ublue-os-media-automount-udev && \
     { systemctl enable ublue-os-media-automount.service || true; } && \
     /ctx/cleanup
+
+# Require images from ghcr.io/lutvzn to be signed with Pyrite's key. Keep this
+# after package installs: updating ublue-os-signing would overwrite policy.json.
+COPY cosign.pub /etc/pki/containers/pyrite.pub
+RUN test -f /usr/etc/containers/policy.json && \
+    for policy in /usr/etc/containers/policy.json /etc/containers/policy.json; do \
+        if [ -f "$policy" ]; then \
+            jq --arg key /etc/pki/containers/pyrite.pub \
+                '.transports.docker["ghcr.io/lutvzn"] = [{type: "sigstoreSigned", keyPath: $key, signedIdentity: {type: "matchRepository"}}]' \
+                "$policy" > "$policy.new" && mv "$policy.new" "$policy" || exit 1; \
+        fi; \
+    done
 
 # Cleanup & Finalize
 COPY system_files/overrides /
@@ -571,9 +601,9 @@ RUN --mount=type=tmpfs,target=/run --network=none bootc container lint
 # DECK BUILDS
 ################
 
-FROM bazzite AS bazzite-deck
+FROM pyrite AS pyrite-deck
 
-ARG IMAGE_NAME="${IMAGE_NAME:-bazzite-deck}"
+ARG IMAGE_NAME="${IMAGE_NAME:-pyrite-deck}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR:-ublue-os}"
 ARG IMAGE_BRANCH="${IMAGE_BRANCH:-stable}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-kinoite}"
@@ -780,9 +810,9 @@ RUN --mount=type=tmpfs,target=/run --network=none bootc container lint
 # NVIDIA BUILDS
 ################
 
-FROM ${NVIDIA_BASE} AS bazzite-nvidia
+FROM ${NVIDIA_BASE} AS pyrite-nvidia
 
-ARG IMAGE_NAME="${IMAGE_NAME:-bazzite-nvidia}"
+ARG IMAGE_NAME="${IMAGE_NAME:-pyrite-nvidia}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR:-ublue-os}"
 ARG IMAGE_BRANCH="${IMAGE_BRANCH:-stable}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-kinoite}"

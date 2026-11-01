@@ -5,7 +5,7 @@
 
 [![build-pyrite](https://github.com/lutvzn/pyrite/actions/workflows/build.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build.yml) [![build-pyrite-isos](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lutvzn/pyrite/badge)](https://scorecard.dev/viewer/?uri=github.com/lutvzn/pyrite) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lutvzn/pyrite)
 
-# [🇺🇸](https://github.com/ublue-os/bazzite/blob/main/README.md) [🇪🇸](https://github.com/ublue-os/bazzite/blob/main/README-SPA.md) [🇮🇩](https://github.com/ublue-os/bazzite/blob/main/README-ID.md) [🇨🇳](https://github.com/ublue-os/bazzite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/ublue-os/bazzite/blob/main/README-FR.md) [🇧🇷](https://github.com/ublue-os/bazzite/blob/main/README-BR.md) [🇳🇱](https://github.com/ublue-os/bazzite/blob/main/README-NL.md) [🇷🇺](https://github.com/ublue-os/bazzite/blob/main/README-RU.md) [🇩🇪](https://github.com/ublue-os/bazzite/blob/main/README-DE.md) [🇸🇪](https://github.com/ublue-os/bazzite/blob/main/README-SV.md) [🇹🇼](https://github.com/ublue-os/bazzite/blob/main/README-ZH-TW.md) [🇹🇷](https://github.com/ublue-os/bazzite/blob/main/README-TR.md)
+# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇪🇸](https://github.com/lutvzn/pyrite/blob/main/README-SPA.md) [🇮🇩](https://github.com/lutvzn/pyrite/blob/main/README-ID.md) [🇨🇳](https://github.com/lutvzn/pyrite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/lutvzn/pyrite/blob/main/README-FR.md) [🇧🇷](https://github.com/lutvzn/pyrite/blob/main/README-BR.md) [🇳🇱](https://github.com/lutvzn/pyrite/blob/main/README-NL.md) [🇷🇺](https://github.com/lutvzn/pyrite/blob/main/README-RU.md) [🇩🇪](https://github.com/lutvzn/pyrite/blob/main/README-DE.md) [🇸🇪](https://github.com/lutvzn/pyrite/blob/main/README-SV.md) [🇹🇼](https://github.com/lutvzn/pyrite/blob/main/README-ZH-TW.md) [🇹🇷](https://github.com/lutvzn/pyrite/blob/main/README-TR.md)
 
 ---
 
@@ -261,7 +261,7 @@ Pyrite builds on Bazzite, a community effort that wouldn't exist without everyon
 
 ## Build Your Own
 
-Pyrite is built entirely via GitHub Actions. Creating your own custom version of it is as easy as forking this repository, adding a private signing key, and enabling the fork's GitHub Actions. Running the `Build Bazzite` workflow will then generate custom images for all variants of Pyrite.
+Pyrite is built entirely via GitHub Actions. Creating your own custom version of it is as easy as forking this repository, adding a private signing key, and enabling the fork's GitHub Actions. Running the `Build Pyrite` workflow will then generate custom images for all variants of Pyrite.
 
 If you only want to generate images for the variants of Pyrite you are using, edit `.github/workflows/build.yml` to comment out the variants you do not wish to build in the `push-ghcr` job's `strategy`'s `matrix` list.
 

@@ -12,7 +12,7 @@ if [ -e "/ostree" ] && [ -e "/sysroot" ] ; then
     
     # 2. Define Identifiers
     UNVERIFIED_TAG="ostree-unverified-registry"
-    OFFICIAL_TAG="ghcr.io/ublue-os/"
+    OFFICIAL_TAG="ghcr.io/lutvzn/"
     
     # 3. The "Smart" Check
     if [[ "$CURRENT_REF" == *"$UNVERIFIED_TAG"* ]] && [[ "$CURRENT_REF" == *"$OFFICIAL_TAG"* ]]; then

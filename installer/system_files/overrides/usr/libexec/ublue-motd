@@ -10,7 +10,7 @@ escape() {
 	sed 's/[&/\]/\\&/g' <<< "$1"
 }
 
-IMAGE_NAME=$(sudo podman images --format '{{ index .Names 0 }}\n' 'bazzite*' | sed -E 's@.*/@@')
+IMAGE_NAME=$(sudo podman images --format '{{ index .Names 0 }}\n' 'pyrite*' | sed -E 's@.*/@@')
 IMAGE_NAME_ESCAPED=$(escape "$IMAGE_NAME")
 
 THEME=$(gsettings get org.gnome.desktop.interface accent-color || echo "'purple'")

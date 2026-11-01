@@ -125,7 +125,7 @@ nvidia_hardware_helper() {
     if ! gpuinfo="$(timeout $timeout_seconds lspci -nn | grep '\[03')"; then
         return 124
     fi
-    image_name=$(timeout $timeout_seconds sudo podman images --format '{{ index .Names 0 }}\n' 'bazzite*')
+    image_name=$(timeout $timeout_seconds sudo podman images --format '{{ index .Names 0 }}\n' 'pyrite*')
     if [ -z "$image_name" ]; then
         return 124
     fi

@@ -8,19 +8,19 @@ from typing import Any
 import re
 from collections import defaultdict
 
-REGISTRY = "ghcr.io/ublue-os/"
+REGISTRY = "ghcr.io/lutvzn/"
 
 IMAGES = [
-    "bazzite",
-    "bazzite-gnome",
-    "bazzite-deck",
-    "bazzite-deck-gnome",
-    "bazzite-deck-nvidia",
-    "bazzite-deck-nvidia-gnome",
-    "bazzite-nvidia",
-    "bazzite-gnome-nvidia",
-    "bazzite-nvidia-open",
-    "bazzite-gnome-nvidia-open",
+    "pyrite",
+    "pyrite-gnome",
+    "pyrite-deck",
+    "pyrite-deck-gnome",
+    "pyrite-deck-nvidia",
+    "pyrite-deck-nvidia-gnome",
+    "pyrite-nvidia",
+    "pyrite-gnome-nvidia",
+    "pyrite-nvidia-open",
+    "pyrite-gnome-nvidia-open",
 ]
 
 RETRIES = 3
@@ -50,7 +50,7 @@ OTHER_NAMES = {
 COMMITS_FORMAT = (
     "### Commits\n| Hash | Subject | Author |\n| --- | --- | --- |{commits}\n\n"
 )
-COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/bazzite/commit/{hash})** | {subject} | {author} |"
+COMMIT_FORMAT = "\n| **[{short}](https://github.com/lutvzn/pyrite/commit/{hash})** | {subject} | {author} |"
 
 CHANGELOG_TITLE = "{tag}: {pretty}"
 CHANGELOG_FORMAT = """\

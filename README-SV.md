@@ -9,7 +9,7 @@
   </a>
 </p>
 
-# [🇺🇸](https://github.com/ublue-os/bazzite/blob/main/README.md) [🇸🇪](https://github.com/ublue-os/bazzite/blob/main/README-SV.md)
+# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇸🇪](https://github.com/lutvzn/pyrite/blob/main/README-SV.md)
 
 <p align="center">
   <a href="https://download.bazzite.gg/"><img src="/repo_content/download.png?raw=true" alt="Hämta Bazzite"/></a>
@@ -223,7 +223,7 @@ Bazzite är ett gemenskapsprojekt och skulle inte finnas utan allas stöd. Tack 
 
 ## Bygg en egen version
 
-Bazzite byggs helt med GitHub Actions. Det är enkelt att skapa en egen anpassad version: förgrena detta förråd, lägg till en privat signeringsnyckel och aktivera GitHub Actions i förgreningen. Arbetsflödet `Build Bazzite` skapar sedan egna avbildningar för alla Bazzite-varianter.
+Bazzite byggs helt med GitHub Actions. Det är enkelt att skapa en egen anpassad version: förgrena detta förråd, lägg till en privat signeringsnyckel och aktivera GitHub Actions i förgreningen. Arbetsflödet `Build Pyrite` skapar sedan egna avbildningar för alla Bazzite-varianter.
 
 Om du bara vill skapa avbildningar för de varianter du använder, redigerar du `.github/workflows/build.yml` och kommenterar bort övriga varianter i `push-ghcr`-jobbets `strategy.matrix`-lista.
 

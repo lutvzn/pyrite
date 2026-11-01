@@ -95,14 +95,14 @@
             "id": "outputChoice",
             "type": "pickString",
             "description": "Choose which container to build",
-            "default": "bazzite",
+            "default": "pyrite",
             "options": [
-                "bazzite",
-                "bazzite-deck",
-                "bazzite-nvidia",
-                "bazzite gnome",
-                "bazzite-deck gnome",
-                "bazzite-nvidia gnome"
+                "pyrite",
+                "pyrite-deck",
+                "pyrite-nvidia",
+                "pyrite gnome",
+                "pyrite-deck gnome",
+                "pyrite-nvidia gnome"
             ]
         }
     ]

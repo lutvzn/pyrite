@@ -1,0 +1,11 @@
+Brave Origin is provided by Brave Software, Inc. and is included in this image
+as an unmodified copy of Brave's official RPM. Brave's name and logos are
+trademarks of Brave Software, Inc. Pyrite is not affiliated with Brave Software.
+
+License:          /opt/brave.com/brave-origin/LICENSE (Mozilla Public License 2.0)
+Package licenses: rpm -q --qf '%{LICENSE}\n' brave-origin
+                  /usr/share/appdata/brave-origin.appdata.xml
+Third-party
+notices:          brave://credits
+Source code:      https://github.com/brave/brave-browser
+                  https://github.com/brave/brave-core
