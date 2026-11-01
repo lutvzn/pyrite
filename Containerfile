@@ -132,6 +132,8 @@ RUN --mount=type=cache,dst=/var/cache \
     /ctx/cleanup
 
 # Install Valve's patched Mesa, and Xwayland
+# Terra's Xwayland stays on 24.1.14: its 26.0.99.903 prerelease no longer provides
+# xorg-x11-server-Xwayland(x86-64), which the Hyprland package requires.
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=cache,dst=/var/log \
@@ -148,7 +150,7 @@ RUN --mount=type=cache,dst=/var/cache \
     done && unset -v toswap repo package && \
     dnf5 -y swap --allowerasing \
         --repo terra-extras \
-            xorg-x11-server-Xwayland terra-xorg-x11-server-Xwayland && \
+            xorg-x11-server-Xwayland terra-xorg-x11-server-Xwayland-24.1.14 && \
     dnf5 -y swap --allowerasing \
         --repo terra-extras \
             wireplumber terra-wireplumber && \
