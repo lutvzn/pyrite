@@ -7,7 +7,7 @@
 - [ ] `kernel.kptr_restrict=2`: run `scxctl switch -m auto` and check `journalctl -u scx_loader`. If the scheduler fails, change the value to `1`.
 - [ ] Blocked kernel modules: confirm nothing needs them, especially `sctp`.
 
-- [ ] Niri and Hyprland: log in to each on KDE and GNOME images, then check screen sharing and file pickers. Also check that KDE and GNOME's own sessions still use their usual portals.
+- [ ] Hyprland: log in on a GNOME image, then check screen sharing and file pickers. Also check that KDE and GNOME's own sessions still use their usual portals.
 
 ## Brave Origin
 

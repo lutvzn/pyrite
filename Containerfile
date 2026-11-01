@@ -417,10 +417,11 @@ RUN --mount=type=cache,dst=/var/cache \
     rm -f /etc/yum.repos.d/netbird.repo && \
     /ctx/cleanup
 
-# Install Niri and Hyprland on desktop images only. Recommended packages over 2 MB
-# (alacritty, waybar, gnome-keyring, kitty) are left out on purpose. Hyprland isn't
-# in Fedora, so it comes from a COPR that is removed again so it can't replace
-# Fedora packages later. Its priority beats Fedora's older hypr* libraries.
+# Install Hyprland on desktop images only. Its recommended kitty is left out on
+# purpose in favor of foot. Hyprland isn't in Fedora, so it comes from a COPR that
+# is removed again so it can't replace Fedora packages later. Its priority beats
+# Fedora's older hypr* libraries. The system-wide config only applies until the
+# user adds ~/.config/hypr/hyprland.lua, which Hyprland looks for first.
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=cache,dst=/var/log \
@@ -430,19 +431,21 @@ RUN --mount=type=cache,dst=/var/cache \
         dnf5 -y copr enable lionheartp/Hyprland && \
         dnf5 -y config-manager setopt copr:copr.fedorainfracloud.org:lionheartp:Hyprland.priority=98 && \
         dnf5 -y install --setopt=install_weak_deps=False \
-            niri \
-            fuzzel \
-            swaylock \
-            xdg-desktop-portal-gnome \
+            foot \
             xdg-desktop-portal-gtk \
             hyprland \
             hyprland-uwsm \
+            hyprland-guiutils \
             xdg-desktop-portal-hyprland \
             wofi \
             playerctl \
             brightnessctl && \
-        test -x /usr/bin/niri && \
+        test -x /usr/bin/foot && \
         test -x /usr/bin/Hyprland && \
+        mkdir -p /etc/xdg/hypr && \
+        sed 's/^local terminal .*/local terminal    = "foot"/' /usr/share/hypr/hyprland.lua > /etc/xdg/hypr/hyprland.lua && \
+        grep -q '^local terminal    = "foot"$' /etc/xdg/hypr/hyprland.lua && \
+        echo foot.desktop > /etc/xdg/hyprland-xdg-terminals.list && \
         dnf5 -y copr remove lionheartp/Hyprland \
     ; fi && \
     /ctx/cleanup
@@ -942,6 +945,9 @@ RUN --mount=type=cache,dst=/var/cache \
         rm "/usr/share/ublue-os/dconfs/nvidia-silverblue/zz0-"*"-bazzite-nvidia-silverblue-"*".gschema.override" \
     ; fi && \
     sed -i 's/ nvidia_peermem\b//' /usr/lib/dracut/dracut.conf.d/99-nvidia.conf && \
+    if [ -f /etc/xdg/autostart/nvidia-settings-load.desktop ]; then \
+        sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /etc/xdg/autostart/nvidia-settings-load.desktop \
+    ; fi && \
     systemctl enable nvidia-powerd.service && \
     systemctl disable nvidia-persistenced.service && \
     systemctl enable ublue-nvidia-flatpak-runtime-sync && \
