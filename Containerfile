@@ -459,14 +459,19 @@ RUN --mount=type=cache,dst=/var/cache \
 # Require images from ghcr.io/lutvzn to be signed with Pyrite's key. Keep this
 # after package installs: updating ublue-os-signing would overwrite policy.json.
 COPY cosign.pub /etc/pki/containers/pyrite.pub
-RUN test -f /usr/etc/containers/policy.json && \
-    for policy in /usr/etc/containers/policy.json /etc/containers/policy.json; do \
-        if [ -f "$policy" ]; then \
-            jq --arg key /etc/pki/containers/pyrite.pub \
-                '.transports.docker["ghcr.io/lutvzn"] = [{type: "sigstoreSigned", keyPath: $key, signedIdentity: {type: "matchRepository"}}]' \
-                "$policy" > "$policy.new" && mv "$policy.new" "$policy" || exit 1; \
-        fi; \
-    done
+RUN policy=/etc/containers/policy.json && \
+    if ! jq -e '.transports.docker["ghcr.io/ublue-os"]' "$policy" > /dev/null; then \
+        echo "ERROR: $policy is missing or has no ghcr.io/ublue-os rule" >&2; \
+        ls -l /etc/containers /usr/etc/containers >&2 || true; \
+        exit 1; \
+    fi && \
+    jq --arg key /etc/pki/containers/pyrite.pub \
+        '.transports.docker["ghcr.io/lutvzn"] = [{type: "sigstoreSigned", keyPath: $key, signedIdentity: {type: "matchRepository"}}]' \
+        "$policy" > "$policy.new" && \
+    mv "$policy.new" "$policy" && \
+    if [ -e /usr/etc/containers/policy.json ]; then \
+        cp "$policy" /usr/etc/containers/policy.json; \
+    fi
 
 # Cleanup & Finalize
 COPY system_files/overrides /
