@@ -392,6 +392,59 @@ RUN --mount=type=cache,dst=/var/cache \
     rm -f /etc/yum.repos.d/brave-browser.repo && \
     /ctx/cleanup
 
+# Install zsh and NetBird. NetBird's install script generates and starts a service,
+# which can't work in an image build, so skip its scripts and ship
+# usr/lib/systemd/system/netbird.service instead. It is off by default.
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/tmp \
+    dnf5 -y install zsh gtk4 webkitgtk6.0 xdg-utils ca-certificates && \
+    dnf5 -y config-manager addrepo --overwrite --id=netbird \
+        --set=name=NetBird \
+        --set=baseurl=https://pkgs.netbird.io/yum/ \
+        --set=gpgcheck=1 \
+        --set=repo_gpgcheck=1 \
+        --set=gpgkey=https://pkgs.netbird.io/yum/repodata/repomd.xml.key && \
+    dnf5 -y install --setopt=tsflags=noscripts --setopt=install_weak_deps=False netbird netbird-ui && \
+    chmod 0600 /etc/sysconfig/netbird && \
+    test -x /usr/bin/netbird && \
+    test -x /usr/bin/netbird-ui && \
+    test -s /usr/share/licenses/netbird/LICENSE && \
+    rm -f /etc/yum.repos.d/netbird.repo && \
+    /ctx/cleanup
+
+# Install Niri and Hyprland on desktop images only. Recommended packages over 2 MB
+# (alacritty, waybar, gnome-keyring, kitty) are left out on purpose. Hyprland isn't
+# in Fedora, so it comes from a COPR that is removed again so it can't replace
+# Fedora packages later. Its priority beats Fedora's older hypr* libraries.
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/tmp \
+    if [[ "${IMAGE_NAME}" != *deck* ]]; then \
+        dnf5 -y copr enable lionheartp/Hyprland && \
+        dnf5 -y config-manager setopt copr:copr.fedorainfracloud.org:lionheartp:Hyprland.priority=98 && \
+        dnf5 -y install --setopt=install_weak_deps=False \
+            niri \
+            fuzzel \
+            swaylock \
+            xdg-desktop-portal-gnome \
+            xdg-desktop-portal-gtk \
+            hyprland \
+            hyprland-uwsm \
+            xdg-desktop-portal-hyprland \
+            wofi \
+            playerctl \
+            brightnessctl && \
+        test -x /usr/bin/niri && \
+        test -x /usr/bin/Hyprland && \
+        dnf5 -y copr remove lionheartp/Hyprland \
+    ; fi && \
+    /ctx/cleanup
+
 # Install ujust-picker from GitHub releases
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/cache/libdnf5 \

@@ -28,7 +28,7 @@ SECUREBOOT_DOC_URL_QR="/usr/share/ublue-os/secure_boot_qr.png"
 # Bazzite anaconda profile
 : ${VARIANT_ID:?}
 
-echo "Bazzite release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
+echo "Pyrite release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 
 # Secureboot Key Fetch
 mkdir -p /usr/share/ublue-os
