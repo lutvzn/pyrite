@@ -273,7 +273,7 @@ Bazzite, topluluk çabası ve herkesin desteği olmadan var olmayacaktı. Aşağ
 
 Bazzite tamamen GitHub Actions aracılığıyla oluşturulur. Kendi özel sürümünü oluşturmak, bu repository'yi fork etmek, private bir signing key eklemek ve fork'un GitHub Actions'ını etkinleştirmek kadar kolaydır. `Build Pyrite` workflow'ını çalıştırmak daha sonra Bazzite'in tüm varyantları için özel imajlar oluşturacaktır.
 
-Yalnızca kullandığınız Bazzite varyantları için imajlar oluşturmak istiyorsanız, `.github/workflows/build.yml` dosyasını düzenleyerek `push-ghcr` job'unun `strategy`'sinin `matrix` listesinde istemeyen varyantları yorum satırı yapın.
+Yalnızca kullandığınız Bazzite varyantları için imajlar oluşturmak istiyorsanız, `.github/workflows/build.yml` dosyasını düzenleyerek `DEFAULT_IMAGES` listesinde istemeyen varyantları yorum satırı yapın.
 
 Ayrıca fork'unuzu upstream ile senkronize tutmak istiyorsanız popüler [pull app](https://github.com/apps/pull) için bir config gönderiyoruz. Bazzite değişikliklerini takip etmek ve aynı zamanda kendi değişikliklerinizi yapmak için bu uygulamayı repo'nuzda etkinleştirin.
 

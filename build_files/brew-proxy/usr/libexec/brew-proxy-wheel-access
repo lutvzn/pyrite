@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+# Adds wheel members to brewadmin so `brew update`, `upgrade` and `cleanup` work
+# without a password. Installs and removals still ask for authentication.
+# Runs every boot so that users created after the first boot are included.
+
+set -euo pipefail
+
+# brewadmin may only exist in /usr/lib/group, where gpasswd can't modify it. See:
+# https://docs.fedoraproject.org/en-US/atomic-desktops/troubleshooting/#_unable_to_add_user_to_group
+flock /etc/group -c 'grep -q "^brewadmin:" /etc/group || getent group brewadmin >> /etc/group || groupadd -r brewadmin'
+
+IFS=, read -ra users <<< "$(getent group wheel | cut -d: -f4)"
+for user in "${users[@]}"; do
+    gpasswd -a "${user}" brewadmin
+done

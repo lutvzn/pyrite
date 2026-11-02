@@ -190,6 +190,9 @@ qrencode -o "$SECUREBOOT_DOC_URL_QR" "$SECUREBOOT_DOC_URL"
         brew-upgrade.timer \
         brew-update.timer \
         brew-setup.service \
+        brew-proxy-setup.service \
+        brew-proxy-fix-ownership.service \
+        brew-proxy-wheel-access.service \
         rpm-ostreed-automatic.timer \
         uupd.timer \
         ublue-guest-user.service \

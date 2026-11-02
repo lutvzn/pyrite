@@ -538,6 +538,24 @@ RUN --mount=type=cache,dst=/var/cache \
     { systemctl enable ublue-os-media-automount.service || true; } && \
     /ctx/cleanup
 
+# brew-proxy, moves Homebrew to a dedicated linuxbrew user and forwards brew commands over D-Bus.
+# Not on Deck images: installs need a polkit prompt, which is untested in Game Mode.
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/tmp \
+    if [[ "${IMAGE_NAME}" != *deck* ]]; then \
+        dnf5 -y copr enable secureblue/packages && \
+        dnf5 -y config-manager setopt 'copr:copr.fedorainfracloud.org:secureblue:packages.includepkgs=brew-proxy*' && \
+        dnf5 -y install brew-proxy brew-proxy-selinux && \
+        dnf5 -y copr remove secureblue/packages && \
+        semodule -l | grep -qx brew-proxy && \
+        cp -a /ctx/brew-proxy/. / && \
+        systemctl enable brew-proxy-setup.service brew-proxy-fix-ownership.service brew-proxy-wheel-access.service \
+    ; fi && \
+    /ctx/cleanup
+
 # Require images from ghcr.io/lutvzn to be signed with Pyrite's key. Keep this
 # after package installs: updating ublue-os-signing would overwrite policy.json.
 COPY cosign.pub /etc/pki/containers/pyrite.pub

@@ -1,0 +1,10 @@
+[Unit]
+Description=Allow wheel users to run brew maintenance commands through brew-proxy
+After=systemd-sysusers.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/brew-proxy-wheel-access
+
+[Install]
+WantedBy=multi-user.target

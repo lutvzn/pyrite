@@ -33,6 +33,12 @@ on:
     inputs:
       handwritten:
         description: "Small changelog:"
+  workflow_call:
+    inputs:
+      images:
+        description: "Space-separated images to build instead of DEFAULT_IMAGES. Skips the release."
+        type: string
+        required: true
 
 permissions: {}
 
@@ -42,6 +48,18 @@ concurrency:
 
 env:
   REPO_OWNER: ${{ github.repository_owner }}
+  # Images built by this workflow unless a caller passes its own list.
+  DEFAULT_IMAGES: |
+    # pyrite
+    # pyrite-gnome
+    pyrite-deck
+    pyrite-deck-gnome
+    # pyrite-deck-nvidia
+    # pyrite-deck-nvidia-gnome
+    # pyrite-nvidia
+    # pyrite-gnome-nvidia
+    pyrite-nvidia-open
+    pyrite-gnome-nvidia-open
 
 jobs:
   # Resolve the version tag once for the whole run.
@@ -52,17 +70,20 @@ jobs:
       contents: read
     outputs:
       version: ${{ steps.generate.outputs.version }}
+      images: ${{ steps.generate.outputs.images }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Generate version tag
         id: generate
+        env:
+          REQUESTED_IMAGES: ${{ inputs.images }}
         run: |
           set -euo pipefail
 
           workflow=.github/workflows/build.yml
-          mapfile -t images < <(yq -r '.jobs.push-ghcr.strategy.matrix.image[]' "$workflow")
+          mapfile -t images < <(printf '%s\n' "${REQUESTED_IMAGES:-$DEFAULT_IMAGES}" | grep -v '^[[:space:]]*#' | xargs -n1)
           fedora_version="$(yq -r '.jobs.push-ghcr.strategy.matrix.include[] | select(has("fedora_version")) | .fedora_version' "$workflow" | head -n1)"
           if [[ -z "$fedora_version" || "$fedora_version" == "null" || ${#images[@]} -eq 0 ]]; then
             echo "Failed to read the image matrix from $workflow" >&2
@@ -95,6 +116,7 @@ jobs:
 
           echo "Version tag for this run: $version"
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "images=$(printf '%s\n' "${images[@]}" | jq -Rnc '[inputs]')" >> "$GITHUB_OUTPUT"
 
   push-ghcr:
     name: Make
@@ -110,29 +132,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image:
-          - pyrite
-          - pyrite-gnome
-          - pyrite-deck
-          - pyrite-deck-gnome
-          - pyrite-deck-nvidia
-          - pyrite-deck-nvidia-gnome
-          - pyrite-nvidia
-          - pyrite-gnome-nvidia
-          - pyrite-nvidia-open
-          - pyrite-gnome-nvidia-open
+        image: ${{ fromJSON(needs.version.outputs.images) }}
         include:
           - fedora_version: 44
             kernel_flavor: ogc
             kernel_version: 7.2.11-ogc4.1.fc44
             base_image_flavor: main
             arch: x86_64
-          - image: pyrite-nvidia
-            kernel_flavor: ogc-lts
-            kernel_version: 6.18.56-ogc1.1.fc44
-          - image: pyrite-gnome-nvidia
-            kernel_flavor: ogc-lts
-            kernel_version: 6.18.56-ogc1.1.fc44
+          # An image-specific include adds a broken job to any run that doesn't
+          # build that image, including the single-image workflows.
+          # - image: pyrite-nvidia
+          #   kernel_flavor: ogc-lts
+          #   kernel_version: 6.18.56-ogc1.1.fc44
+          # - image: pyrite-gnome-nvidia
+          #   kernel_flavor: ogc-lts
+          #   kernel_version: 6.18.56-ogc1.1.fc44
     steps:
       - name: Show disk space
         run: sudo df -h
@@ -650,7 +664,8 @@ jobs:
   generate_release:
     name: Generate Release
     needs: [push-ghcr]
-    if: github.event_name != 'pull_request'
+    # The changelog compares every image, so a partial build can't produce one.
+    if: github.event_name != 'pull_request' && inputs.images == ''
     permissions:
       contents: write
     secrets: inherit

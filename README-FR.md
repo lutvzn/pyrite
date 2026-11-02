@@ -291,7 +291,7 @@ Bazzite est un effort communautaire et ne serait pas possible sans le soutien de
 
 Bazzite est entièrement construit via GitHub Actions. Créer votre propre version personnalisée est aussi simple que de forker ce dépôt, ajouter une clé de signature privée et activer les GitHub Actions du fork. L'exécution du workflow `Build Pyrite` génèrera alors des images personnalisées pour toutes les variantes de Bazzite.
 
-Si vous ne souhaitez générer des images que pour les variantes que vous utilisez, éditez `.github/workflows/build.yml` pour commenter les variantes que vous ne souhaitez pas construire dans la liste `matrix` de la `strategy` du job `push-ghcr`.
+Si vous ne souhaitez générer des images que pour les variantes que vous utilisez, éditez `.github/workflows/build.yml` pour commenter les variantes que vous ne souhaitez pas construire dans la liste `DEFAULT_IMAGES`.
 
 Nous proposons également une configuration pour la bien connue [application pull](https://github.com/apps/pull) si vous souhaitez synchroniser votre fork avec l'original. Activez cette application sur votre repo pour suivre les modifications de Bazzite tout en apportant vos propres modifications.
 

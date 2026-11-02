@@ -225,7 +225,7 @@ Bazzite är ett gemenskapsprojekt och skulle inte finnas utan allas stöd. Tack 
 
 Bazzite byggs helt med GitHub Actions. Det är enkelt att skapa en egen anpassad version: förgrena detta förråd, lägg till en privat signeringsnyckel och aktivera GitHub Actions i förgreningen. Arbetsflödet `Build Pyrite` skapar sedan egna avbildningar för alla Bazzite-varianter.
 
-Om du bara vill skapa avbildningar för de varianter du använder, redigerar du `.github/workflows/build.yml` och kommenterar bort övriga varianter i `push-ghcr`-jobbets `strategy.matrix`-lista.
+Om du bara vill skapa avbildningar för de varianter du använder, redigerar du `.github/workflows/build.yml` och kommenterar bort övriga varianter i listan `DEFAULT_IMAGES`.
 
 Projektet innehåller också konfiguration för [pull-appen](https://github.com/apps/pull), som kan hålla din förgrening synkroniserad med uppströmsprojektet medan du gör egna ändringar.
 

@@ -276,7 +276,7 @@ Bazzite ist eine Gemeinschaftsleistung und würde ohne die Unterstützung aller 
 
 Bazzite wird vollständig auf GitHub entwickelt, und das Erstellen einer eigenen, angepassten Version ist so einfach wie das Forken dieses Repositories, das Hinzufügen eines privaten Signierungsschlüssels und das Aktivieren von GitHub Actions. Eine Ausführung des `Build Pyrite`-Workflows wird dann personalisierte System-Images für alle Bazzite-Varianten erstellen.
 
-Wenn du nur die Images der von dir benutzten Bazzite-Varianten erstellen willst, bearbeite `.github/workflows/build.yml` und kommentiere die Varianten aus, die du nicht erstellen willst, in `push-ghcr`-Job's `strategy`'s `matrix`-Liste.
+Wenn du nur die Images der von dir benutzten Bazzite-Varianten erstellen willst, bearbeite `.github/workflows/build.yml` und kommentiere die Varianten aus, die du nicht erstellen willst, in der `DEFAULT_IMAGES`-Liste.
 
 Wir liefern auch eine Konfiguration für die beliebte [Pull-App](https://github.com/apps/pull) mit, falls du deinen Fork mit dem Upstream synchron halten möchtest. Aktiviere diese App in deinem Repo, um Bazzite-Änderungen nachzuverfolgen und gleichzeitig deine eigenen Modifikationen vorzunehmen.
 
