@@ -56,6 +56,7 @@ Bazzite est construit à partir de [ublue-os/main](https://github.com/ublue-os/m
 - Support complet des codecs matériels pour le décodage H264.
 - Support complet pour les runtimes OpenCL/HIP ROCM d'AMD.
 - Pilote [xone](https://github.com/medusalix/xone) pour les contrôleurs Xbox.
+- Prise en charge améliorée des volants avec plusieurs pilotes supplémentaires.
 - Support complet pour [DisplayLink](https://www.synaptics.com/products/displaylink-graphics).
 - Comprend les thèmes KDE de Valve issus de SteamOS.
 - [vkBasalt](https://github.com/DadSchoorse/vkBasalt), [MangoHud](https://github.com/flightlessmango/Mangohud) et [OBS VkCapture](https://github.com/nowrep/obs-vkcapture) installés et disponibles par défaut.
@@ -81,7 +82,7 @@ Bazzite est construit à partir de [ublue-os/main](https://github.com/ublue-os/m
 
 La variante courante est disponible sous le nom `bazzite`, adaptée aux ordinateurs de bureau.
 
-- Mises à jour automatiques pour le système d'exploitation, les Flatpaks et plus - propulsées par [uupd](https://github.com/ublue-os/uupd) et [topgrade](https://github.com/topgrade-rs/topgrade).
+- Mises à jour automatiques pour le système d'exploitation, les Flatpaks et plus - propulsées par [uupd](https://github.com/ublue-os/uupd).
 
 > [!IMPORTANT]
 > **Les ISOs peuvent être téléchargées depuis notre [site web](https://download.bazzite.gg), et un guide d'installation utile peut être trouvé [ici](https://docs.bazzite.gg/General/Installation_Guide/).**
@@ -106,29 +107,21 @@ Variante conçue pour être utilisée comme alternative à SteamOS sur le Steam 
 
 - Démarre directement en mode jeu, correspondant au comportement de SteamOS.
 - **Le `duperemove` automatique réduit considérablement la taille des compatdata.**
-- **La dernière version de Mesa crée des caches de shaders plus petits et n'en nécessite pas pour éviter les saccades.**
-- **Peut être démarré même si le disque est plein.**
 - **Prise en charge de toutes les langues prises en charge par Fedora en amont.**
 - **Utilise Wayland en mode bureau avec [support pour Steam input](https://github.com/Supreeeme/extest).**
-- Inclut [HHD](https://github.com/hhd-dev/hhd) pour un support d'entrée étendu sur les consoles portables non-Valve.
-- Propose des versions portées de la plupart des packages SteamOS, y compris les pilotes, les mises à jour de firmware et les contrôleurs du ventilateur [du dépôt evlaV](https://gitlab.com/evlaV).
+- Propose des versions portées de la plupart des packages SteamOS, y compris les pilotes, les mises à jour de firmware et les contrôleurs du ventilateur.
 - Mesa patché pour un contrôle approprié du framerate par Gamescope.
 - Livré avec des patches de [SteamOS BTRFS](https://gitlab.com/popsulfr/steamos-btrfs) pour un support complet de BTRFS pour le lecteur carte SD par défaut.
 - Livré avec une copie portée de [SDGyroDSU](https://github.com/kmicki/SteamDeckGyroDSU), activé par défaut.
 - Option pour installer [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader), [EmuDeck](https://www.emudeck.com/), [RetroDECK](https://retrodeck.net/) et [ProtonUp-Qt](https://davidotek.github.io/protonup-qt/), ainsi que de nombreux autres packages utiles lors de l'installation.
-- Système de mise à jour personnalisé permettant de mettre à jour l'OS, les Flatpaks et plus directement depuis l'interface du mode jeu grâce à [uupd](https://github.com/ublue-os/uupd) et [topgrade](https://github.com/topgrade-rs/topgrade).
+- Système de mise à jour personnalisé permettant de mettre à jour l'OS, les Flatpaks et plus directement depuis l'interface du mode jeu grâce à [uupd](https://github.com/ublue-os/uupd).
 - Prise en charge intégrée du dual-boot Windows grâce à l'installation intacte de GRUB par Fedora.
 - Une mise à jour casse quelque chose ? Revenez facilement à la version précédente de Bazzite grâce à la fonctionnalité de rollback de `rpm-ostree`. Vous pouvez même sélectionner les images précédentes au démarrage.
 - Steam et Lutris préinstallés dans l'image en tant que packages superposés.
-- Utilise ZRAM<sub><sup>(4 Go)</sup></sub> avec l'algorithme de compression LZ4 par défaut.
-- Planificateurs CPU [LAVD](https://crates.io/crates/scx_lavd) et [BORE](https://github.com/firelzrd/bore-scheduler) pour un gameplay fluide et réactif.
+- Prise en charge des planificateurs [sched-ext](https://github.com/sched-ext/scx) dès l'installation.
 - Planificateur d'E/S Kyber pour éviter la starvation des E/S lors de l'installation de jeux ou pendant le processus de `duperemove` en arrière-plan.
 - Applique les paramètres du noyau de SteamOS.
 - Profils d'affichage calibrés en couleur pour les écrans mats et réfléchissants du Steam Deck inclus.
-- Fonctionnalités pour utilisateurs avancés désactivées par défaut, notamment :
-  - Service pour l'undervolting à faible risque du Steam Deck ainsi que des ordinateurs portables AMD Framework via [RyzenAdj](https://github.com/FlyGoat/RyzenAdj) et [Ryzen SMU](https://gitlab.com/leogx9r/ryzen_smu), voir `ryzenadj.service` et `/etc/default/ryzenadj`.
-  - Support intégré pour l'overclocking d'affichage. Par exemple, ajoutez `CUSTOM_REFRESH_RATES=30-68` à `/etc/environment`. Les taux de rafraîchissement minimum et maximum varient selon la console portable !
-  - Vous avez modifié votre Steam Deck avec 32 Go de RAM ? Profitez du double de la quantité maximale de VRAM, appliqué automatiquement. <sup><sub>(Pourriez-vous partager vos compétences en soudure ?)</sub></sup>
 - Les services spécifiques au matériel du Steam Deck peuvent être désactivés en exécutant `ujust disable-bios-updates` et `ujust disable-firmware-updates` dans le terminal. Ils sont automatiquement désactivés sur le matériel non-Deck, et sur les Decks avec des écrans DeckHD ou des mods de 32 Go de RAM.
 - Plus d'informations peuvent être trouvées [ici](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Steam_Gaming_Mode/) sur les images Bazzite pour Steam Deck.
 
@@ -144,14 +137,6 @@ rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite-deck:stabl
 #### Consoles portables alternatives
 
 Merci de consulter notre [Wiki des consoles portables](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Handheld_Wiki/) pour les modifications de paramètres nécessaires et les plugins Decky Loader pour le mode jeu Steam sur votre console portable spécifique.
-
-**Assurez-vous également de lire la [documentation de hhd](https://github.com/hhd-dev/hhd#after-install), certaines consoles portables nécessitent des modifications/tweaks spécifiques pour fonctionner correctement.**
-
-Nous avons également des commandes `ujust` pour installer divers thèmes [CSS Loader](https://docs.deckthemes.com/CSSLoader/Install/#linux-or-steam-deck) qui ne se trouvent pas sur le magasin CSS Loader. Ceux-ci seront automatiquement mis à jour avec Bazzite s'ils sont installés.
-```bash
-# Installer le thème manette de jeu portable (https://github.com/victor-borges/handheld-controller-glyphs)
-ujust install-hhd-controller-glyph-theme
-```
 
 ### GNOME
 
@@ -279,7 +264,7 @@ Bazzite est un effort communautaire et ne serait pas possible sans le soutien de
 
 - [amelia.svg](https://bsky.app/profile/ameliasvg.bsky.social) - Pour la création de notre logo et de notre identité visuelle.
 - [SuperRiderTH](https://github.com/SuperRiderTH) - Pour la création de notre vidéo de démarrage du mode jeu Steam.
-- [evlaV](https://gitlab.com/evlaV) - Pour avoir rendu le code de Valve disponible et pour être [cette personne](https://xkcd.com/2347/).
+- [evlaV](https://gitlab.com/evlaV) *(Désormais à la retraite)* - Pour avoir rendu le code de Valve disponible et pour être [cette personne](https://xkcd.com/2347/).
 - [ChimeraOS](https://chimeraos.org/) - Pour gamescope-session et pour un soutien précieux tout au long du projet.
 - [Jovian-NixOS](https://github.com/Jovian-Experiments) - Pour le support technique et la création d'un projet similaire. Allez voir, sérieusement. C'est notre cousin basé sur Nix.
 - [sentry](https://copr.fedorainfracloud.org/coprs/sentry/) - Pour l'aide avec les correctifs du noyau nécessaires et pour avoir créé le repo [kernel-fsync](https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/) que nous utilisons maintenant.

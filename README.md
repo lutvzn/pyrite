@@ -5,7 +5,7 @@
 
 [![build-pyrite](https://github.com/lutvzn/pyrite/actions/workflows/build.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build.yml) [![build-pyrite-isos](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml/badge.svg)](https://github.com/lutvzn/pyrite/actions/workflows/build_iso.yml) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lutvzn/pyrite/badge)](https://scorecard.dev/viewer/?uri=github.com/lutvzn/pyrite) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lutvzn/pyrite)
 
-# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇪🇸](https://github.com/lutvzn/pyrite/blob/main/README-SPA.md) [🇮🇩](https://github.com/lutvzn/pyrite/blob/main/README-ID.md) [🇨🇳](https://github.com/lutvzn/pyrite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/lutvzn/pyrite/blob/main/README-FR.md) [🇧🇷](https://github.com/lutvzn/pyrite/blob/main/README-BR.md) [🇳🇱](https://github.com/lutvzn/pyrite/blob/main/README-NL.md) [🇷🇺](https://github.com/lutvzn/pyrite/blob/main/README-RU.md) [🇩🇪](https://github.com/lutvzn/pyrite/blob/main/README-DE.md) [🇸🇪](https://github.com/lutvzn/pyrite/blob/main/README-SV.md) [🇹🇼](https://github.com/lutvzn/pyrite/blob/main/README-ZH-TW.md) [🇹🇷](https://github.com/lutvzn/pyrite/blob/main/README-TR.md)
+# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇪🇸](https://github.com/lutvzn/pyrite/blob/main/README-SPA.md) [🇮🇩](https://github.com/lutvzn/pyrite/blob/main/README-ID.md) [🇨🇳](https://github.com/lutvzn/pyrite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/lutvzn/pyrite/blob/main/README-FR.md) [🇧🇷](https://github.com/lutvzn/pyrite/blob/main/README-BR.md) [🇳🇱](https://github.com/lutvzn/pyrite/blob/main/README-NL.md) [🇷🇺](https://github.com/lutvzn/pyrite/blob/main/README-RU.md) [🇩🇪](https://github.com/lutvzn/pyrite/blob/main/README-DE.md) [🇸🇪](https://github.com/lutvzn/pyrite/blob/main/README-SV.md) [🇹🇼](https://github.com/lutvzn/pyrite/blob/main/README-ZH-TW.md) [🇹🇷](https://github.com/lutvzn/pyrite/blob/main/README-TR.md) [🇺🇦](https://github.com/lutvzn/pyrite/blob/main/README-UK.md)
 
 ---
 
@@ -45,6 +45,7 @@ Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fe
 - HDR and VRR available by default.
 - Full hardware accelerated codec support for H264 decoding.
 - [xone](https://github.com/medusalix/xone) driver for Xbox controllers.
+- Enhanced support for steering wheels with multiple extra drivers.
 - Full support for [DisplayLink](https://www.synaptics.com/products/displaylink-graphics).
 - [vkBasalt](https://github.com/DadSchoorse/vkBasalt), [MangoHud](https://github.com/flightlessmango/Mangohud), and [OBS VkCapture](https://github.com/nowrep/obs-vkcapture) installed and available by default.
 - [ROM Properties Page shell extension](https://github.com/GerbilSoft/rom-properties) included.
@@ -63,13 +64,13 @@ Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fe
 
 Common variant available as `bazzite`, suitable for desktop computers.
 
-- Automatic updates for the OS, Flatpaks, and more - powered by [uupd](https://github.com/ublue-os/uupd) and [topgrade](https://github.com/topgrade-rs/topgrade).
+- Automatic updates for the OS, Flatpaks, and more - powered by [uupd](https://github.com/ublue-os/uupd).
 
 > [!IMPORTANT]
 > **Bazzite ISOs can be downloaded from the Bazzite [website](https://download.bazzite.gg), and a helpful install guide can be found [here](https://docs.bazzite.gg/General/Installation_Guide/).**
 
 Rebase from an existing upstream Fedora Atomic to this image if you want **Open Source GPU Drivers**:
-(Please note: Mesa's Open Source option for NVIDIA GPUs, NVK is still prone to errors at the time of writing, for any issues relating to NVK [please submit a report with Mesa]([url](https://docs.mesa3d.org/bugs.html)), not Ublue/Bazzite/Pyrite)
+(Please note: Mesa's Open Source option for NVIDIA GPUs, NVK is still prone to errors at the time of writing, for any issues relating to NVK [please submit a report with Mesa](https://docs.mesa3d.org/bugs.html), not Ublue/Bazzite/Pyrite)
 
 ```bash
 rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/bazzite:stable
@@ -88,28 +89,21 @@ Variant designed for usage as an alternative to SteamOS on the Steam Deck, and f
 
 - Directly boots to Game mode matching SteamOS's behavior.
 - **Automatic `bees` greatly trims the size of compatdata.**
-- **Latest version of Mesa creates smaller shader caches and does not require them to prevent stutter.**
-- **Able to be booted even if the drive is full.**
 - **Support for every language supported by upstream Fedora.**
 - **Uses Wayland on the desktop with [support for Steam input](https://github.com/Supreeeme/extest).**
-- Features ported versions of most SteamOS packages, including drivers, firmware updaters, and fan controllers [from the evlaV repository](https://gitlab.com/evlaV).
+- Features ported versions of most SteamOS packages, including drivers, firmware updaters, and fan controllers.
 - Patched Mesa for proper framerate control from Gamescope.
 - Comes with patches from [SteamOS BTRFS](https://gitlab.com/popsulfr/steamos-btrfs) for full BTRFS support for the SD card by default.
 - Ships with a ported copy of [SDGyroDSU](https://github.com/kmicki/SteamDeckGyroDSU), enabled by default.
 - Option to install [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader), [EmuDeck](https://www.emudeck.com/), [RetroDECK](https://retrodeck.net/), and [ProtonUp-Qt](https://davidotek.github.io/protonup-qt/), among numerous other useful packages on installation.
-- Custom update system allows for the OS, Flatpaks, and more to be updated directly from the Game mode UI powered by [uupd](https://github.com/ublue-os/uupd) and [topgrade](https://github.com/topgrade-rs/topgrade).
+- Custom update system allows for the OS, Flatpaks, and more to be updated directly from the Game mode UI powered by [uupd](https://github.com/ublue-os/uupd).
 - Built in support for Windows dual-boot thanks to Fedora's installation of GRUB being left intact.
 - Update break something? Easily roll back to the previous version of Pyrite thanks to `rpm-ostree`'s rollback functionality. You can even select previous images at boot.
 - Steam and Lutris preinstalled on the image as layered packages.
-- Uses ZRAM<sub><sup>(4GB)</sup></sub> with the LZ4 compression algorithm by default.
-- [LAVD](https://crates.io/crates/scx_lavd) and [BORE](https://github.com/firelzrd/bore-scheduler) CPU Schedulers for smooth and responsive gameplay.
+- Out of the box support for [sched-ext](https://github.com/sched-ext/scx) schedulers.
 - Kyber I/O scheduler to prevent I/O starvation when installing games or during background `duperemove` process.
 - Applies SteamOS's kernel parameters.
 - Color calibrated display profiles for matte and reflective Steam Deck screens included.
-- Default-disabled power-user features, including:
-    - Service for low-risk undervolting of the Steam Deck as well as AMD Framework Laptops via [RyzenAdj](https://github.com/FlyGoat/RyzenAdj) and [Ryzen SMU](https://gitlab.com/leogx9r/ryzen_smu), see `ryzenadj.service` and `/etc/default/ryzenadj`.
-    - Built in support for display overclocking. For example, add `CUSTOM_REFRESH_RATES=30-68` to `/etc/environment`. Minimum and maximum refresh rates differ per handheld!
-    - 32GB RAM mod your Steam Deck? Enjoy double the maximum VRAM amount, automatically applied. <sup><sub>(Can you share your soldering skills?)</sub></sup>
 - Steam Deck hardware-specific services can be disabled by running `ujust disable-bios-updates` and `ujust disable-firmware-updates` in the terminal. These are automatically disabled on non-Deck hardware, and on Decks with DeckHD displays or 32GB RAM mods.
 - More information can be found [here](https://docs.bazzite.gg/Handheld_and_HTPC_edition/Steam_Gaming_Mode/) on the Bazzite Steam Deck images.
 
@@ -211,7 +205,7 @@ View [additional documentation](http://docs.bazzite.gg/) surrounding the project
 These images are signed with sigstore's [cosign](https://docs.sigstore.dev/cosign/key_management/overview/). You can verify the signature by downloading the `cosign.pub` key from this repo and running the following command:
 
 ```bash
-cosign verify --key cosign.pub ghcr.io/ublue-os/bazzite
+cosign verify --key cosign.pub --new-bundle-format=false ghcr.io/ublue-os/bazzite
 ```
 
 ## Secure Boot
@@ -251,7 +245,7 @@ Pyrite builds on Bazzite, a community effort that wouldn't exist without everyon
 
 - [amelia.svg](https://bsky.app/profile/ameliasvg.bsky.social) - For creating our logo and overall branding.
 - [SuperRiderTH](https://github.com/SuperRiderTH) - For creating our Steam game mode startup video.
-- [evlaV](https://gitlab.com/evlaV) - For making Valve's code available and for being [this person](https://xkcd.com/2347/).
+- [evlaV](https://gitlab.com/evlaV) *(Now retired)* - For making Valve's code available and for being [this person](https://xkcd.com/2347/).
 - [ChimeraOS](https://chimeraos.org/) - For gamescope-session and for valuable support along the way.
 - [Jovian-NixOS](https://github.com/Jovian-Experiments) - For supporting us with technical issues and for creating a similar project. Seriously, go check it out. It's our Nix-based cousin.
 - [sentry](https://copr.fedorainfracloud.org/coprs/sentry/) - For assistance with needed kernel patches and for creating the [kernel-fsync repo](https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/).
@@ -263,14 +257,18 @@ Pyrite builds on Bazzite, a community effort that wouldn't exist without everyon
 
 Pyrite is built entirely via GitHub Actions. Creating your own custom version of it is as easy as forking this repository, adding a private signing key, and enabling the fork's GitHub Actions. Running the `Build Pyrite` workflow will then generate custom images for all variants of Pyrite.
 
-If you only want to generate images for the variants of Pyrite you are using, edit `.github/workflows/build.yml` to comment out the variants you do not wish to build in the `DEFAULT_IMAGES` list.
+If you only want to generate images for the variants of Pyrite you are using, list them in `DEFAULT_BUILD_IMAGES` in `build.py`; the build workflow builds only those. The ISO and cleanup workflows read the full `IMAGES` table in `build.py`. A few things still assume particular variants exist:
+
+- ISOs use `pyrite` or `pyrite-gnome` as their live environment, so keep the matching variant if you build ISOs.
+- `DEFAULT_IMAGE` in `build.py` must name a variant you kept.
+- `.github/workflows/retag.yml`, which is for emergency use only, has its own list of all variants.
 
 We also ship a config for the popular [pull app](https://github.com/apps/pull) if you'd like to keep your fork in sync with upstream. Enable this app on your repo to keep track of Bazzite changes while also making your own modifications.
 
 ### How to Sign Your Images
 
 1. First, [familiarize yourself](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with keeping secrets on GitHub.
-2. [Generate a new key pair](https://docs.sigstore.dev/cosign/key_management/signing_with_self-managed_keys/) with Cosign (`cosign generate-key-pair`). This key pair must have no signature.
+2. [Generate a new key pair](https://docs.sigstore.dev/cosign/key_management/signing_with_self-managed_keys/) with Cosign (`cosign generate-key-pair`). This key pair must have no password.
 3. Replace the `cosign.pub` file in your public repo with the one you generated - you and your users will need it to check the signatures.
 4. Add the private key (stored as text inside the `cosign.key` file) as a Repository Secret in the fork's settings page, in the `Settings -> Secrets and variables -> Actions` menu. Name the secret `SIGNING_SECRET`.
 
