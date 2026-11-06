@@ -12,7 +12,7 @@ update:
     /usr/libexec/uupd-update | jq -r -R '
         fromjson?
         | select(.msg != "scanned progress")
-        | [(.title, (if .msg == "Command output" then .output else .msg end), .description) | select(.)]
+        | [(.title, (.output // (if .msg == "Command output" then null else .msg end)), .description) | select(.)]
         | join(" ")
         | select(. != "")
         | select(((try fromjson catch null) | type) != "object")
