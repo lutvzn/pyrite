@@ -6,7 +6,7 @@ IMAGE_BRANCH=$(jq -r '."image-branch"' < $IMAGE_INFO)
 FEDORA_VERSION=$(jq -r '."fedora-version"' < $IMAGE_INFO)
 
 # SCRIPT VERSION
-HWS_VER=85
+HWS_VER=86
 HWS_VER_FILE="/etc/bazzite/hws_version"
 HWS_VER_RAN=$(cat $HWS_VER_FILE)
 
@@ -45,6 +45,7 @@ MINIMUM_FREE_ZRAM=$(awk '/MemTotal/ {printf "%.0f", $2 * 0.01}' /proc/meminfo)
 CURRENT_FREE_ZRAM=$(sysctl vm.min_free_kbytes | awk '{print $3}')
 KARGS=$(rpm-ostree kargs)
 NEEDED_KARGS=()
+SHOULD_REBOOT=false
 
 # Add directory for fixups
 mkdir -p /etc/bazzite/fixups
@@ -255,6 +256,33 @@ if [[ -f "/var/lib/waydroid/lxc/waydroid/config" ]]; then
   sed -i '/lxc\.apparmor\.profile\s*=\s*unconfined/d' "/var/lib/waydroid/lxc/waydroid/config"
 fi
 
+#Enable TSC directsync after patch
+set -eu
+if [ ! -r /proc/cpuinfo ]; then
+    echo "Cannot read /proc/cpuinfo; unable to check TSC support." >&2
+    exit 1
+fi
+clocksource_file=/sys/devices/system/clocksource/clocksource0/current_clocksource
+if [ -r "$clocksource_file" ]; then
+    current_clocksource=$(cat "$clocksource_file")
+else
+    current_clocksource=unknown
+fi
+if awk '
+    /^flags[[:space:]]*:/ {
+        for (i = 2; i <= NF; i++) {
+            if ($i == "tsc") found = 1
+        }
+    }
+    END { exit !found }
+' /proc/cpuinfo &&
+    ! { [ "$current_clocksource" = hpet ] ||
+        [ "$current_clocksource" = acpi_pm ]; }; then
+    echo "CPU reports TSC support."
+else
+    sudo rpm-ostree kargs --append-if-missing=tsc=directsync
+fi
+
 # HIBERNATION
 if /usr/libexec/hwsupport/needs-hibernation; then
   if [[ ! -f /etc/bazzite/hibernation_enabled ]]; then
@@ -278,10 +306,10 @@ if [ ! -f /etc/hostname ]; then
   touch /etc/hostname
 fi
 
-if [[ -n "$NEEDED_KARGS" ]]; then
+if (( ${#NEEDED_KARGS[@]} > 0 )); then
   echo "Found needed karg changes, applying the following: ${NEEDED_KARGS[*]}"
   plymouth display-message --text="Preparing System - Please wait, this may take a while" || true
-  rpm-ostree kargs ${NEEDED_KARGS[*]} || exit 1
+  rpm-ostree kargs "${NEEDED_KARGS[@]}" || exit 1
   SHOULD_REBOOT=true
 else
   echo "No karg changes needed"

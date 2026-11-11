@@ -106,8 +106,14 @@ install-coolercontrol ACTION="":
     PublishPort=127.0.0.1:11987:11987
     Volume=/etc/coolercontrol:/etc/coolercontrol
     Volume=/var/lib/coolercontrol:/var/lib/coolercontrol
+    Volume=/etc/localtime:/etc/localtime
+
+    # make dbus sleep listener work
+    Volume=/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+    Environment=CC_DBUS=ON
+
     PodmanArgs=$podman_args
-    Label=io.containers.autoupdate=registry
+    AutoUpdate=registry
 
     [Service]
     Restart=always
@@ -640,6 +646,8 @@ install-openrazer ACTION="":
         mkdir -p ~/.config/systemd/user/ && \
         mv ~/.local/lib/systemd/user/openrazer-daemon.service ~/.config/systemd/user && \
         pip install --user daemonize gobject && \
+        mkdir -p ~/.config/openrazer && \
+        cp ~/.local/share/openrazer/razer.conf.example ~/.config/openrazer/razer.conf && \
         systemctl --user daemon-reload && \
         systemctl enable --user --now openrazer-daemon
         if ! grep -q "plugdev" /etc/group; then
