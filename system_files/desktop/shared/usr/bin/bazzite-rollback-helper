@@ -4,7 +4,6 @@ source /usr/lib/ujust/ujust.sh
 
 IMAGE_INFO="/usr/share/ublue-os/image-info.json"
 DEFAULT_IMAGE=$(jq -r '."image-name"' < $IMAGE_INFO)
-DEFAULT_VENDOR=$(jq -r '."image-vendor"' < $IMAGE_INFO)
 DEFAULT_BRANCH=stable
 
 # Cache skopeo output if possible (only if bkt already exists)
@@ -27,20 +26,24 @@ Options:
 Examples:
   $(basename "$0") list stable
   $(basename "$0") rebase testing
-  $(basename "$0") rebase pyrite-gnome:stable
+  $(basename "$0") rebase bazzite-gnome:stable
 
 For help: https://discord.bazzite.gg"
 
 VARIANTS=(
-  "pyrite"
-  "pyrite-deck"
-  "pyrite-nvidia"
-  "pyrite-nvidia-open"
-  "pyrite-deck-nvidia"
-  "pyrite-gnome"
-  "pyrite-gnome-nvidia"
-  "pyrite-gnome-nvidia-open"
-  "pyrite-deck-gnome"
+  "bazzite"
+  "bazzite-deck"
+  "bazzite-nvidia"
+  "bazzite-nvidia-open"
+  "bazzite-deck-nvidia"
+  "bazzite-gnome"
+  "bazzite-gnome-nvidia"
+  "bazzite-gnome-nvidia-open"
+  "bazzite-deck-gnome"
+  "bazzite-dx"
+  "bazzite-dx-gnome"
+  "bazzite-dx-nvidia"
+  "bazzite-dx-nvidia-gnome"
 )
 
 # Utility functions
@@ -116,7 +119,7 @@ skopeo_tags() {
 }
 
 available_variants() {
-  local provider="${1:-$DEFAULT_VENDOR}"
+  local provider="${1:-ublue-os}"
   echo >&2 "Checking variants from $provider..."
   
   for variant in "${VARIANTS[@]}"; do
@@ -154,10 +157,10 @@ rebase_to() {
   case "$target" in
     ostree-*) ;;
     *:*)
-      full_ref="ostree-image-signed:docker://ghcr.io/$DEFAULT_VENDOR/$target"
+      full_ref="ostree-image-signed:docker://ghcr.io/ublue-os/$target"
       ;;
     *)
-      full_ref="ostree-image-signed:docker://ghcr.io/$DEFAULT_VENDOR/$DEFAULT_IMAGE:$target"
+      full_ref="ostree-image-signed:docker://ghcr.io/ublue-os/$DEFAULT_IMAGE:$target"
       ;;
   esac
 
@@ -196,7 +199,7 @@ rebase_to() {
 }
 
 pick_image() {
-  local provider="${1:-$DEFAULT_VENDOR}"
+  local provider="${1:-ublue-os}"
   local variants=$(available_variants "$provider")
   
   if [[ -z "$variants" ]]; then
@@ -259,10 +262,10 @@ list_images() {
   
   if [[ "$branch" == "all" ]]; then
     echo >&2 "Listing all available images..."
-    skopeo_tags "$DEFAULT_VENDOR" "pyrite" "all"
+    skopeo_tags "ublue-os" "bazzite" "all"
   else
     echo >&2 "Listing $branch images..."
-    skopeo_tags "$DEFAULT_VENDOR" "pyrite" "$branch"
+    skopeo_tags "ublue-os" "bazzite" "$branch"
   fi
 }
 
@@ -310,7 +313,7 @@ rebase() {
   
   if [[ -z "$target" ]]; then
     echo >&2 "Usage: rebase TARGET"
-    echo >&2 "Examples: rebase stable, rebase pyrite-gnome:testing"
+    echo >&2 "Examples: rebase stable, rebase bazzite-gnome:testing"
     return 1
   fi
   
@@ -329,14 +332,14 @@ interactive_menu() {
     case "$action" in
       "List Images")
         clear
-        local variants=$(available_variants "$DEFAULT_VENDOR")
-        local img=$(pick_image "$DEFAULT_VENDOR")
+        local variants=$(available_variants "ublue-os")
+        local img=$(pick_image "ublue-os")
         [[ "$img" != "Back" ]] && { 
           clear
-          local filter=$(choose_filter "$DEFAULT_VENDOR" "$img")
+          local filter=$(choose_filter "ublue-os" "$img")
           [[ "$filter" != "Back" ]] && {
             clear
-            skopeo_tags "$DEFAULT_VENDOR" "$img" "${filter,,}"
+            skopeo_tags "ublue-os" "$img" "${filter,,}"
             press_any_key
           }
         }
@@ -356,14 +359,14 @@ interactive_menu() {
         
       "Rebase")
         clear
-        local img=$(pick_image "$DEFAULT_VENDOR")
+        local img=$(pick_image "ublue-os")
         if [[ "$img" != "Back" ]]; then
-          local filter=$(choose_filter "$DEFAULT_VENDOR" "$img")
+          local filter=$(choose_filter "ublue-os" "$img")
           if [[ "$filter" != "Back" ]]; then
-            local version=$(pick_version "$DEFAULT_VENDOR" "$img" "${filter,,}")
+            local version=$(pick_version "ublue-os" "$img" "${filter,,}")
             [[ "$version" != "Back" && -n "$version" ]] && {
               clear
-              rebase_to "ostree-image-signed:docker://ghcr.io/$DEFAULT_VENDOR/$img:$version"
+              rebase_to "ostree-image-signed:docker://ghcr.io/ublue-os/$img:$version"
               press_any_key
             }
           fi
@@ -372,9 +375,9 @@ interactive_menu() {
         
       "Custom Provider")
         clear
-        echo "Enter provider name (default: $DEFAULT_VENDOR):"
+        echo "Enter provider name (default: ublue-os):"
         read -r provider
-        provider="${provider:-$DEFAULT_VENDOR}"
+        provider="${provider:-ublue-os}"
         provider=$(echo "$provider" | tr '[:upper:]' '[:lower:]')
         
         local img=$(pick_image "$provider")

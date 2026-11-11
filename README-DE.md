@@ -9,7 +9,7 @@
 
 [![build-bazzite](https://github.com/ublue-os/bazzite/actions/workflows/build.yml/badge.svg)](https://github.com/ublue-os/bazzite/actions/workflows/build.yml) [![build-bazzite-isos](https://github.com/ublue-os/bazzite/actions/workflows/build_iso.yml/badge.svg)](https://github.com/ublue-os/bazzite/actions/workflows/build_iso.yml)
 
-# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇪🇸](https://github.com/lutvzn/pyrite/blob/main/README-SPA.md) [🇮🇩](https://github.com/lutvzn/pyrite/blob/main/README-ID.md) [🇨🇳](https://github.com/lutvzn/pyrite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/lutvzn/pyrite/blob/main/README-FR.md) [🇧🇷](https://github.com/lutvzn/pyrite/blob/main/README-BR.md) [🇳🇱](https://github.com/lutvzn/pyrite/blob/main/README-NL.md) [🇷🇺](https://github.com/lutvzn/pyrite/blob/main/README-RU.md) [🇩🇪](https://github.com/lutvzn/pyrite/blob/main/README-DE.md) [🇹🇼](https://github.com/lutvzn/pyrite/blob/main/README-ZH-TW.md)
+# [🇺🇸](https://github.com/ublue-os/bazzite/blob/main/README.md) [🇪🇸](https://github.com/ublue-os/bazzite/blob/main/README-SPA.md) [🇮🇩](https://github.com/ublue-os/bazzite/blob/main/README-ID.md) [🇨🇳](https://github.com/ublue-os/bazzite/blob/main/README-zh-cn.md) [🇫🇷](https://github.com/ublue-os/bazzite/blob/main/README-FR.md) [🇧🇷](https://github.com/ublue-os/bazzite/blob/main/README-BR.md) [🇳🇱](https://github.com/ublue-os/bazzite/blob/main/README-NL.md) [🇷🇺](https://github.com/ublue-os/bazzite/blob/main/README-RU.md) [🇩🇪](https://github.com/ublue-os/bazzite/blob/main/README-DE.md) [🇹🇼](https://github.com/ublue-os/bazzite/blob/main/README-ZH-TW.md)
 
 <p align="center">
   <a href="https://download.bazzite.gg/"><img src="/repo_content/download.png?raw=true" alt="Bazzite herunterladen"/></a>
@@ -268,9 +268,9 @@ Bazzite ist eine Gemeinschaftsleistung und würde ohne die Unterstützung aller 
 
 ## Eigene Version erstellen
 
-Bazzite wird vollständig auf GitHub entwickelt, und das Erstellen einer eigenen, angepassten Version ist so einfach wie das Forken dieses Repositories, das Hinzufügen eines privaten Signierungsschlüssels und das Aktivieren von GitHub Actions. Eine Ausführung des `Build Pyrite`-Workflows wird dann personalisierte System-Images für alle Bazzite-Varianten erstellen.
+Bazzite wird vollständig auf GitHub entwickelt, und das Erstellen einer eigenen, angepassten Version ist so einfach wie das Forken dieses Repositories, das Hinzufügen eines privaten Signierungsschlüssels und das Aktivieren von GitHub Actions. Eine Ausführung des `Build Bazzite`-Workflows wird dann personalisierte System-Images für alle Bazzite-Varianten erstellen.
 
-Wenn du nur die Images der von dir benutzten Bazzite-Varianten erstellen willst, bearbeite `.github/workflows/build.yml` und kommentiere die Varianten aus, die du nicht erstellen willst, in der `DEFAULT_IMAGES`-Liste.
+Wenn du nur die Images der von dir benutzten Bazzite-Varianten erstellen willst, bearbeite `.github/workflows/build.yml` und kommentiere die Varianten aus, die du nicht erstellen willst, in `push-ghcr`-Job's `strategy`'s `matrix`-Liste.
 
 Wir liefern auch eine Konfiguration für die beliebte [Pull-App](https://github.com/apps/pull) mit, falls du deinen Fork mit dem Upstream synchron halten möchtest. Aktiviere diese App in deinem Repo, um Bazzite-Änderungen nachzuverfolgen und gleichzeitig deine eigenen Modifikationen vorzunehmen.
 

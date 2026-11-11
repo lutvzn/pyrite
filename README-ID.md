@@ -9,7 +9,7 @@
 
 [![build-bazzite](https://github.com/ublue-os/bazzite/actions/workflows/build.yml/badge.svg)](https://github.com/ublue-os/bazzite/actions/workflows/build.yml)
 
-# [🇺🇸](https://github.com/lutvzn/pyrite/blob/main/README.md) [🇪🇸](https://github.com/lutvzn/pyrite/blob/main/README-SPA.md) [🇮🇩](https://github.com/lutvzn/pyrite/blob/main/README-ID.md) [🇫🇷](https://github.com/lutvzn/pyrite/blob/main/README-FR.md) [🇧🇷](https://github.com/lutvzn/pyrite/blob/main/README-BR.md) [🇳🇱](https://github.com/lutvzn/pyrite/blob/main/README-NL.md) [🇹🇼](https://github.com/lutvzn/pyrite/blob/main/README-ZH-TW.md)
+# [🇺🇸](https://github.com/ublue-os/bazzite/blob/main/README.md) [🇪🇸](https://github.com/ublue-os/bazzite/blob/main/README-SPA.md) [🇮🇩](https://github.com/ublue-os/bazzite/blob/main/README-ID.md) [🇫🇷](https://github.com/ublue-os/bazzite/blob/main/README-FR.md) [🇧🇷](https://github.com/ublue-os/bazzite/blob/main/README-BR.md) [🇳🇱](https://github.com/ublue-os/bazzite/blob/main/README-NL.md) [🇹🇼](https://github.com/ublue-os/bazzite/blob/main/README-ZH-TW.md)
 
 
 <p align="center">

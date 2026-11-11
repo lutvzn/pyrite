@@ -12,7 +12,7 @@ verify-image:
     GOOD="ostree-image-signed:docker://"
 
     # Logic: Check for Unverified AND Official
-    if [[ "$REF" == *"$BAD"* ]] && [[ "$REF" == *"ghcr.io/lutvzn/"* ]]; then
+    if [[ "$REF" == *"$BAD"* ]] && [[ "$REF" == *"ghcr.io/ublue-os/"* ]]; then
         echo "⚠️  UNVERIFIED OFFICIAL IMAGE DETECTED"
         echo "Current: $REF"
 

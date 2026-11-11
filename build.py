@@ -158,7 +158,7 @@ DEFAULT_BUILD_IMAGES = [
 
 IMAGE_LABELS = {
     "io.artifacthub.package.logo-url": "https://raw.githubusercontent.com/ublue-os/bazzite/main/repo_content/logo.png",
-    "io.artifacthub.package.readme-url": "https://raw.githubusercontent.com/lutvzn/pyrite/refs/heads/main/README.md",
+    "io.artifacthub.package.readme-url": "https://raw.githubusercontent.com/lutvzn/pyrite/refs/heads/main/.github/README.md",
     "org.opencontainers.image.description": (
         "Pyrite is a custom image that brings the best of Linux gaming to "
         "all of your devices - including your favorite handheld."

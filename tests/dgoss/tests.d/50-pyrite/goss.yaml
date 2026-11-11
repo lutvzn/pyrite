@@ -1,0 +1,182 @@
+# Checks for Pyrite's additions on top of Bazzite. Bazzite's own checks live in
+# 00-smoke, which this directory leaves untouched so merges don't conflict.
+command:
+  # Installed systems only accept updates signed with cosign.pub.
+  signing_policy_trusts_pyrite_key:
+    exec: |
+      sh -c '
+      policy=/etc/containers/policy.json
+      if ! jq -e ".transports.docker[\"ghcr.io/lutvzn\"][0] | .type == \"sigstoreSigned\" and .keyPath == \"/etc/pki/containers/pyrite.pub\"" "$policy" > /dev/null; then
+        echo "FAIL: $policy has no sigstoreSigned rule for ghcr.io/lutvzn using pyrite.pub"
+        exit 1
+      fi
+      if ! jq -e ".transports.docker[\"ghcr.io/ublue-os\"]" "$policy" > /dev/null; then
+        echo "FAIL: $policy lost the ghcr.io/ublue-os rule"
+        exit 1
+      fi
+      echo "OK: $policy requires Pyrite signatures for ghcr.io/lutvzn"
+      '
+    exit-status: 0
+    stdout:
+      - "/^OK:/"
+
+  pyrite_binaries_are_executable:
+    exec: |
+      sh -c '
+      for bin in /usr/lib/opt/brave.com/brave-origin/brave /usr/bin/zsh /usr/bin/netbird /usr/bin/netbird-ui; do
+        if [ ! -x "$bin" ]; then
+          echo "FAIL: $bin is missing or not executable"
+          exit 1
+        fi
+      done
+      echo "OK: Brave Origin, zsh and NetBird are installed"
+      '
+    exit-status: 0
+    stdout:
+      - "/^OK:/"
+
+  # NetBird ships disabled; users turn it on themselves.
+  netbird_is_not_enabled:
+    exec: |
+      sh -c '
+      for dir in /etc/systemd/system /usr/lib/systemd/system; do
+        if [ -e "$dir/multi-user.target.wants/netbird.service" ]; then
+          echo "FAIL: netbird.service is enabled in $dir"
+          exit 1
+        fi
+      done
+      echo "OK: netbird.service is installed but not enabled"
+      '
+    exit-status: 0
+    stdout:
+      - "/^OK:/"
+
+  # Hyprland, Noctalia, brew-proxy and the Xwayland pin are skipped on deck images.
+  desktop_additions_match_image_type:
+    exec: |
+      sh -c '
+      name=$(jq -r ".\"image-name\" // empty" /usr/share/ublue-os/image-info.json 2>/dev/null)
+      if [ -z "$name" ]; then
+        echo "FAIL: unable to read the image name from /usr/share/ublue-os/image-info.json"
+        exit 1
+      fi
+      wants=/etc/systemd/system/multi-user.target.wants
+      case "$name" in
+        *deck*)
+          for path in /usr/bin/Hyprland /usr/bin/noctalia /etc/xdg/hypr/hyprland.lua; do
+            if [ -e "$path" ]; then
+              echo "FAIL: $name is a deck image but has $path"
+              exit 1
+            fi
+          done
+          if rpm -q brew-proxy > /dev/null 2>&1; then
+            echo "FAIL: $name is a deck image but has brew-proxy"
+            exit 1
+          fi
+          echo "OK: $name leaves out the desktop-only additions"
+          ;;
+        *)
+          for bin in /usr/bin/Hyprland /usr/bin/noctalia /usr/bin/foot; do
+            if [ ! -x "$bin" ]; then
+              echo "FAIL: $bin is missing on $name"
+              exit 1
+            fi
+          done
+          if ! grep -q "^local terminal    = \"foot\"$" /etc/xdg/hypr/hyprland.lua; then
+            echo "FAIL: /etc/xdg/hypr/hyprland.lua is missing or does not use foot"
+            exit 1
+          fi
+          if ! rpm -q brew-proxy brew-proxy-selinux > /dev/null; then
+            echo "FAIL: brew-proxy is not installed on $name"
+            exit 1
+          fi
+          for unit in brew-proxy-setup.service brew-proxy-fix-ownership.service brew-proxy-wheel-access.service; do
+            if [ ! -e "$wants/$unit" ]; then
+              echo "FAIL: $unit is not enabled on $name"
+              exit 1
+            fi
+          done
+          version=$(rpm -q --qf "%{VERSION}" terra-xorg-x11-server-Xwayland 2>/dev/null)
+          case "$version" in
+            24.*) ;;
+            *)
+              echo "FAIL: Xwayland should be pinned to 24.x on $name, found ${version:-nothing}"
+              exit 1
+              ;;
+          esac
+          echo "OK: $name has Hyprland, Noctalia, brew-proxy and Xwayland $version"
+          ;;
+      esac
+      '
+    exit-status: 0
+    stdout:
+      - "/^OK:/"
+
+file:
+  /usr/lib/os-release:
+    exists: true
+    contents:
+      - '/^NAME="Pyrite"$/'
+      # Installer profiles and scripts match on the ID, so it stays bazzite.
+      - "/^ID=bazzite$/"
+
+  /etc/pki/containers/pyrite.pub:
+    exists: true
+    contents:
+      - "BEGIN PUBLIC KEY"
+
+  /etc/containers/registries.d/pyrite.yaml:
+    exists: true
+    contents:
+      - "ghcr.io/lutvzn"
+
+  /usr/lib/opt/brave.com/brave-origin/chrome-sandbox:
+    exists: true
+    mode: "4755"
+    owner: root
+
+  /usr/lib/tmpfiles.d/pyrite-brave.conf:
+    exists: true
+    contents:
+      - "/usr/lib/opt/brave.com"
+
+  /etc/sysconfig/netbird:
+    exists: true
+    mode: "0600"
+
+  /usr/lib/systemd/system/netbird.service:
+    exists: true
+
+  /usr/lib/modprobe.d/pyrite-hardening.conf:
+    exists: true
+    contents:
+      - "install sctp /bin/false"
+
+  /usr/lib/sysctl.d/55-pyrite-hardening.conf:
+    exists: true
+    contents:
+      - "/^kernel.kptr_restrict = 2$/"
+
+  # Patched at build time by build_files/pyrite/07-patch-upstream-files.sh.
+  /usr/bin/bazzite-rollback-helper:
+    exists: true
+    contents:
+      - '/^  "pyrite-gnome-nvidia-open"$/'
+      - '!ghcr.io/ublue-os/'
+      - '!"bazzite-dx'
+
+  /etc/profile.d/verify_motd.sh:
+    exists: true
+    contents:
+      - 'OFFICIAL_TAG="ghcr.io/lutvzn/"'
+
+  /usr/share/ublue-os/just/92-bazzite-verify.just:
+    exists: true
+    contents:
+      - '"ghcr.io/lutvzn/"'
+      - "!ghcr.io/ublue-os/"
+
+  /usr/share/ublue-os/bazaar/hooks.py:
+    exists: true
+    contents:
+      - "brew trust ublue-os/tap && brew tap ublue-os/tap && brew install --cask"

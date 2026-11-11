@@ -5,6 +5,7 @@ After=systemd-sysusers.service
 [Service]
 Type=oneshot
 ExecStart=/usr/libexec/brew-proxy-wheel-access
+StateDirectory=brew-proxy-wheel-access
 
 [Install]
 WantedBy=multi-user.target

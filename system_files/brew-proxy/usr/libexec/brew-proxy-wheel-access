@@ -3,14 +3,64 @@
 # Adds wheel members to brewadmin so `brew update`, `upgrade` and `cleanup` work
 # without a password. Installs and removals still ask for authentication.
 # Runs every boot so that users created after the first boot are included.
+#
+# Users this script added are recorded in $STATE_DIRECTORY and removed from
+# brewadmin again once they leave wheel. Users an admin added to brewadmin by
+# hand, as brew-proxy's README describes, are never removed.
 
 set -euo pipefail
+
+state="${STATE_DIRECTORY:-/var/lib/brew-proxy-wheel-access}/added"
 
 # brewadmin may only exist in /usr/lib/group, where gpasswd can't modify it. See:
 # https://docs.fedoraproject.org/en-US/atomic-desktops/troubleshooting/#_unable_to_add_user_to_group
 flock /etc/group -c 'grep -q "^brewadmin:" /etc/group || getent group brewadmin >> /etc/group || groupadd -r brewadmin'
 
-IFS=, read -ra users <<< "$(getent group wheel | cut -d: -f4)"
-for user in "${users[@]}"; do
-    gpasswd -a "${user}" brewadmin
+members() {
+    getent group "$1" | cut -d: -f4 | tr ',' '\n' | sed '/^$/d' | sort -u
+}
+
+mapfile -t wheel < <(members wheel)
+mapfile -t brewadmin < <(members brewadmin)
+
+contains() {
+    local needle="$1" item
+    shift
+    for item in "$@"; do
+        [[ "$item" == "$needle" ]] && return 0
+    done
+    return 1
+}
+
+if [[ -f "$state" ]]; then
+    mapfile -t added < <(sed '/^$/d' "$state")
+else
+    # Earlier versions added every wheel member without recording it, so
+    # treat wheel members already in brewadmin as added by this script.
+    added=()
+    for user in "${wheel[@]}"; do
+        if contains "$user" "${brewadmin[@]}"; then
+            added+=("$user")
+        fi
+    done
+fi
+
+keep=()
+for user in "${added[@]}"; do
+    if contains "$user" "${wheel[@]}"; then
+        keep+=("$user")
+    elif contains "$user" "${brewadmin[@]}"; then
+        gpasswd -d "$user" brewadmin
+    fi
 done
+
+for user in "${wheel[@]}"; do
+    if ! contains "$user" "${brewadmin[@]}"; then
+        gpasswd -a "$user" brewadmin
+        keep+=("$user")
+    fi
+done
+
+mkdir -p "$(dirname "$state")"
+printf '%s\n' "${keep[@]}" | sed '/^$/d' | sort -u > "$state.new"
+mv "$state.new" "$state"

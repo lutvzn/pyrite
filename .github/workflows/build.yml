@@ -372,6 +372,9 @@ jobs:
           retry_wait_seconds: 15
           timeout_minutes: 10
           command: |
+            # Without -e a failed push is masked by the echo below, so the step
+            # reports success without retrying and signing gets an empty digest.
+            set -eu
             ./build.py push \
               --output-image "${{ steps.resolve.outputs.output_image }}" \
               --version "${{ steps.resolve.outputs.version }}" \

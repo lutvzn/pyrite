@@ -17,3 +17,4 @@ echo "--- Starting Pyrite build ---"
 /ctx/pyrite/04-install-hyprland.sh
 /ctx/pyrite/05-install-brew-proxy.sh
 /ctx/pyrite/06-finalize.sh
+/ctx/pyrite/07-patch-upstream-files.sh
