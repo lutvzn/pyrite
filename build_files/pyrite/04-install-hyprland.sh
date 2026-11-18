@@ -27,21 +27,19 @@ trap 'echo "::endgroup::"' EXIT
 dnf5 -y copr enable lionheartp/Hyprland
 dnf5 -y config-manager setopt copr:copr.fedorainfracloud.org:lionheartp:Hyprland.priority=98
 dnf5 -y install --setopt=install_weak_deps=False \
-    foot \
     xdg-desktop-portal-gtk \
     hyprland \
     hyprland-uwsm \
     hyprland-guiutils \
     xdg-desktop-portal-hyprland \
     noctalia
-test -x /usr/bin/foot
 test -x /usr/bin/Hyprland
 test -x /usr/bin/noctalia
 
 mkdir -p /etc/xdg/hypr
 # The $(...) in the Super+B bind is for Hyprland's shell, not this one.
 # shellcheck disable=SC2016
-sed -e 's/^local terminal .*/local terminal    = "foot"/' \
+sed -e 's/^local terminal .*/local terminal    = "footclient"/' \
     -e 's/^local menu .*/local menu        = "noctalia msg panel-toggle launcher"/' \
     -e '/^hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))$/a hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("gtk-launch \\"$(xdg-settings get default-web-browser)\\""))' \
     -e '/^-- end)$/a hl.on("hyprland.start", function() hl.exec_cmd("test -x /usr/libexec/pam_kwallet_init \&\& /usr/libexec/pam_kwallet_init") hl.exec_cmd("noctalia") end)' \
@@ -56,7 +54,7 @@ sed -e 's/^local terminal .*/local terminal    = "foot"/' \
     -e '/^hl.bind("XF86Audio\(Pause\|Play\)"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg media toggle")/' \
     -e '/^-- Requires playerctl$/d' \
     /usr/share/hypr/hyprland.lua > /etc/xdg/hypr/hyprland.lua
-grep -q '^local terminal    = "foot"$' /etc/xdg/hypr/hyprland.lua
+grep -q '^local terminal    = "footclient"$' /etc/xdg/hypr/hyprland.lua
 grep -q 'mainMod .. " + B"' /etc/xdg/hypr/hyprland.lua
 test "$(grep -c '^hl.on("hyprland.start"' /etc/xdg/hypr/hyprland.lua)" -eq 1
 grep -qF 'test -x /usr/libexec/pam_kwallet_init && /usr/libexec/pam_kwallet_init' /etc/xdg/hypr/hyprland.lua
@@ -65,6 +63,6 @@ if grep -qE 'wpctl|brightnessctl|playerctl|hyprlauncher' /etc/xdg/hypr/hyprland.
     echo "ERROR: /etc/xdg/hypr/hyprland.lua still calls a tool Noctalia replaces" >&2
     exit 1
 fi
-echo foot.desktop > /etc/xdg/hyprland-xdg-terminals.list
+echo footclient.desktop > /etc/xdg/hyprland-xdg-terminals.list
 
 dnf5 -y copr remove lionheartp/Hyprland

@@ -16,4 +16,14 @@ mv /var/opt/brave.com /usr/lib/opt/brave.com
 test -x /usr/lib/opt/brave.com/brave-origin/brave
 test -u /usr/lib/opt/brave.com/brave-origin/chrome-sandbox
 test -s /usr/lib/opt/brave.com/brave-origin/LICENSE
+
+# Keep the cookie encryption key consistent between Plasma and Hyprland.
+# GNOME images use the GNOME keyring; Deck images don't ship Hyprland.
+if [[ "${BASE_IMAGE_NAME}" == kinoite && "${IMAGE_NAME}" != *deck* ]]; then
+    wrapper=/usr/lib/opt/brave.com/brave-origin/brave-origin
+    test "$(grep -cF '"$HERE/brave" "$@" || true' "$wrapper")" -eq 1
+    sed -i 's/^"\$HERE\/brave" "\$@" || true$/"$HERE\/brave" --password-store=kwallet6 "$@" || true/' "$wrapper"
+    grep -Fxq '"$HERE/brave" --password-store=kwallet6 "$@" || true' "$wrapper"
+fi
+
 rm -f /etc/yum.repos.d/brave-browser.repo

@@ -62,6 +62,8 @@ Pyrite is a fork of [Bazzite](https://bazzite.gg/), a custom [Fedora Atomic](htt
 
 Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fedora](https://fedoraproject.org/) technology, which means expanded hardware support and built in drivers are included. Additionally, Pyrite adds the following features:
 
+- On KDE desktop images, Brave Origin uses KWallet 6 in both Plasma and Hyprland so switching desktops doesn't change the key used for website login cookies.
+- Foot's server starts at KDE Plasma, GNOME, and Hyprland Wayland login and stops at logout. Launch **Foot Client** to open a terminal on the server; Hyprland's default <kbd>Super</kbd>+<kbd>Q</kbd> shortcut uses it.
 - Uses the [OGC kernel](https://www.github.com/OpenGamingCollective/linux)
 - HDR and VRR available by default.
 - Full hardware accelerated codec support for H264 decoding.
