@@ -42,19 +42,35 @@ Pyrite is installed by rebasing an existing Fedora Atomic or Bazzite system. Rep
 | `pyrite-nvidia-open` | Desktops with NVIDIA's open kernel modules, KDE |
 | `pyrite-gnome-nvidia-open` | Desktops with NVIDIA's open kernel modules, GNOME |
 
-The first rebase can't check signatures yet, because Pyrite's signing key is only installed by the image itself:
+Install Pyrite's public key and registry policy before the first rebase. This adds a rule for `ghcr.io/lutvzn` without replacing the trust rules for Fedora or Bazzite. The checksum below pins the key; check it against a trusted copy of this guide.
 
 ```bash
-rpm-ostree rebase ostree-unverified-registry:ghcr.io/lutvzn/pyrite-deck:stable
+(
+  set -e
+  workdir=$(mktemp -d)
+  trap 'rm -rf "$workdir"' EXIT
+  curl -fsSL https://raw.githubusercontent.com/lutvzn/pyrite/main/cosign.pub \
+    -o "$workdir/pyrite.pub"
+  printf '%s  %s\n' dcf7849d64d94b0d4f0d1667b7f19c9124e7df2021111580d06a529d53fc657d \
+    "$workdir/pyrite.pub" | sha256sum --check
+  jq '.transports.docker["ghcr.io/lutvzn"] = [{
+    type: "sigstoreSigned", keyPath: "/etc/pki/containers/pyrite.pub",
+    signedIdentity: {type: "matchRepository"}
+  }]' /etc/containers/policy.json > "$workdir/policy.json"
+  printf '%s\n' 'docker:' '  ghcr.io/lutvzn:' '    use-sigstore-attachments: true' \
+    > "$workdir/pyrite.yaml"
+  sudo install -Dm0644 "$workdir/pyrite.pub" /etc/pki/containers/pyrite.pub
+  sudo install -Dm0644 "$workdir/pyrite.yaml" /etc/containers/registries.d/pyrite.yaml
+  sudo install -m0644 "$workdir/policy.json" /etc/containers/policy.json
+  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/lutvzn/pyrite-deck:stable
+)
 ```
 
-After rebooting, switch to the signed image so later updates are verified:
-
-```bash
-rpm-ostree rebase ostree-image-signed:docker://ghcr.io/lutvzn/pyrite-deck:stable
-```
+Reboot after the rebase succeeds. Run `ujust pyrite-doctor` to see the booted image, rollback deployment, graphics drivers, active portals, and failed Pyrite services without changing the system.
 
 The [Brave Origin candidate workflow](workflows/brave-candidate.yml) checks Brave's RPM repository daily. It builds only variants with an update newer than both `stable` and any existing `brave-candidate`, using the package versions from their signed SBOMs. Candidates are full Pyrite rebuilds, not browser-only patches. The workflow verifies the image signature before moving `brave-candidate` and does not change `stable` or the weekly distro build.
+
+Release aliases only move after signature verification. On the default branch, `pyrite-nvidia-open` also has to boot in a QEMU VM, rebase to the signed build, reach the display manager, pass Brave's sandbox check, and boot the previous deployment after rollback. Other variants are not covered by this VM gate. Hyprland portal and keyring checks, Deck suspend/resume, and NVIDIA video acceleration still need interactive or hardware testing.
 
 ## About & Features
 

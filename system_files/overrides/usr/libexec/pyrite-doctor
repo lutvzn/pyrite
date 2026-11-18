@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if status=$(rpm-ostree status --json 2>/dev/null); then
+    jq -er '
+        .deployments as $deployments |
+        ($deployments | map(select(.booted)) | first) as $booted |
+        ($deployments | map(select(.booted or .staged | not)) | first) as $previous |
+        "Image: \($booted["container-image-reference"] // "unavailable")",
+        "Digest: \($booted["container-image-reference-digest"] // "unavailable")",
+        "Rollback: \($previous.version // $previous.checksum // "none")"
+    ' <<< "$status"
+else
+    echo 'Image, digest, rollback: rpm-ostree status unavailable'
+fi
+printf 'Channel: '
+jq -r '."image-branch" // "unavailable"' /usr/share/ublue-os/image-info.json 2>/dev/null || echo unavailable
+
+printf '\nGraphics drivers:\n'
+found=false
+for card in /sys/class/drm/card[0-9]*; do
+    [[ ${card##*/} =~ ^card[0-9]+$ ]] || continue
+    if driver=$(readlink "$card/device/driver" 2>/dev/null); then
+        printf '  %s: %s\n' "${card##*/}" "${driver##*/}"
+        found=true
+    fi
+done
+$found || echo '  none detected'
+
+printf '\nActive desktop portals (%s):\n' "${XDG_CURRENT_DESKTOP:-no desktop identified}"
+if bus=$(busctl --user --acquired --no-pager --no-legend list 2>/dev/null); then
+    awk '$1 ~ /^(org\.freedesktop\.portal\.Desktop|org\.freedesktop\.impl\.portal\.desktop\..+)$/ {print "  " $1; found=1} END {if (!found) print "  none active"}' <<< "$bus"
+else
+    echo '  user bus unavailable'
+fi
+
+print_failed() {
+    local scope=$1 units
+    printf '\nFailed Pyrite services (%s):\n' "${scope#--}"
+    if units=$(systemctl "$scope" --failed --type=service --plain --no-pager --no-legend 2>/dev/null); then
+        awk '$1 ~ /^(brew[-.].*|foot-server(@.*)?|netbird|pyrite-.*)\.service$/ {print "  " $1; found=1} END {if (!found) print "  none"}' <<< "$units"
+    else
+        echo '  systemd unavailable'
+    fi
+}
+print_failed --system
+print_failed --user

@@ -11,6 +11,8 @@ trap 'echo "::endgroup::"' EXIT
 dnf5 -y install --setopt=install_weak_deps=False foot
 systemctl --global enable foot-server.service
 
+echo 'import "/usr/share/ublue-os/just/99-pyrite.just"' >> /usr/share/ublue-os/justfile
+
 # Hide the NVIDIA settings autostart entry on nvidia images.
 if [[ -f /etc/xdg/autostart/nvidia-settings-load.desktop ]]; then
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /etc/xdg/autostart/nvidia-settings-load.desktop

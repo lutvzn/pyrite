@@ -39,27 +39,19 @@ jobs:
     if: inputs.old_tag != ''
     needs: [safeguard-timer]
     permissions:
+      contents: read
       packages: write
     steps:
-      # The image registry name must be lower-case, but GitHub usernames can be capitalized.
-      - name: Get lower-case equivalent of the repository owner's username
-        id: repo_owner_case
-        run: echo "lowercase=${REPO_OWNER,,}" >> "$GITHUB_OUTPUT"
-
-      - uses: Zeglius/ghcr-oci-retagger@1e08f1dac27d25efe1377d9a35f133731bf3d986
-        env:
-          ver: "45"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
-          GITHUB_TOKEN: ${{ github.token }}
-          PREFIX: ghcr.io/${{ steps.repo_owner_case.outputs.lowercase }}/
-          TAG_MAPPINGS: |-
-            pyrite:${{ inputs.old_tag }}                           => pyrite:latest,stable,${{ env.ver }}
-            pyrite-deck:${{ inputs.old_tag }}                      => pyrite-deck:latest,stable,${{ env.ver }}
-            pyrite-deck-gnome:${{ inputs.old_tag }}                => pyrite-deck-gnome:latest,stable,${{ env.ver }}
-            pyrite-deck-nvidia:${{ inputs.old_tag }}               => pyrite-deck-nvidia:latest,stable,${{ env.ver }}
-            pyrite-deck-nvidia-gnome:${{ inputs.old_tag }}         => pyrite-deck-nvidia-gnome:latest,stable,${{ env.ver }}
-            pyrite-gnome:${{ inputs.old_tag }}                     => pyrite-gnome:latest,stable,${{ env.ver }}
-            pyrite-gnome-nvidia:${{ inputs.old_tag }}              => pyrite-gnome-nvidia:latest,stable,${{ env.ver }}
-            pyrite-gnome-nvidia-open:${{ inputs.old_tag }}         => pyrite-gnome-nvidia-open:latest,stable,${{ env.ver }}
-            pyrite-nvidia:${{ inputs.old_tag }}                    => pyrite-nvidia:latest,stable,${{ env.ver }}
-            pyrite-nvidia-open:${{ inputs.old_tag }}               => pyrite-nvidia-open:latest,stable,${{ env.ver }}
+          cosign-release: 'v2.6.5'
+      - name: Retag signed image digests
+        env:
+          OLD_TAG: ${{ inputs.old_tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+          printf '%s\n' "$GH_TOKEN" | skopeo login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          bash .github/scripts/retag-signed.sh "$OLD_TAG"
