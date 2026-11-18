@@ -21,7 +21,6 @@
 ## Brave Origin
 
 - [ ] Check the first build's log for the Brave Origin step: the `/opt` link, the install scripts, and the move to `/usr/lib/opt`.
-- [ ] Change the `build.yml` schedule from weekly to daily (`40 4 * * *`) so browser security fixes reach users sooner.
 - [ ] Decide whether to remove the setuid bit from `chrome-sandbox` and rely on user namespaces.
 - [ ] Add an SELinux policy adapted from Trivalent's. Start with one `brave_t` domain in permissive mode, and only enforce it after testing.
 - [ ] Decide whether Brave Origin should replace Firefox as the default browser. Firefox stays the default for now.

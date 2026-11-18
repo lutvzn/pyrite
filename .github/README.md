@@ -54,6 +54,8 @@ After rebooting, switch to the signed image so later updates are verified:
 rpm-ostree rebase ostree-image-signed:docker://ghcr.io/lutvzn/pyrite-deck:stable
 ```
 
+The [Brave Origin candidate workflow](workflows/brave-candidate.yml) checks Brave's RPM repository daily. It builds only variants with an update newer than both `stable` and any existing `brave-candidate`, using the package versions from their signed SBOMs. Candidates are full Pyrite rebuilds, not browser-only patches. The workflow verifies the image signature before moving `brave-candidate` and does not change `stable` or the weekly distro build.
+
 ## About & Features
 
 [Please see the Bazzite website](https://bazzite.gg/) for a newcomer-friendly explanation of Bazzite, which Pyrite is based on. This readme will cover everything in-depth.

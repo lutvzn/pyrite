@@ -1,0 +1,51 @@
+name: Brave Origin candidate
+on:
+  schedule:
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: brave-origin-candidate
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      packages: read
+    outputs:
+      images: ${{ steps.check.outputs.images }}
+      evr: ${{ steps.check.outputs.evr }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: oras-project/setup-oras@ac735097e22fe643015b0d19645f7c9a69942128 # v2.0.4
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: 'v2.6.5'
+      - name: Install registry and RPM tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman skopeo rpm
+      - name: Compare Brave Origin with published images
+        id: check
+        run: bash .github/scripts/brave-candidate.sh
+
+  build:
+    needs: check
+    if: needs.check.outputs.images != ''
+    permissions:
+      actions: read
+      contents: write
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      images: ${{ needs.check.outputs.images }}
+      brave_evr: ${{ needs.check.outputs.evr }}

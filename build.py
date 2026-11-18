@@ -425,7 +425,7 @@ def resolve_pretty_version(
     VERSION_PRETTY build args from our resolved release tag. 
     The registry tag carries the branch prefix and only has a point-release suffix on collisions.
     """
-    release = version.removeprefix("unstable-").removeprefix("testing-")
+    release = version.removeprefix("unstable-").removeprefix("testing-").removeprefix("brave-candidate-")
 
     if not release.startswith(f"{fedora_version}."):
         raise ValueError(f"version tag {version} does not match fedora_version {fedora_version}")
@@ -436,6 +436,8 @@ def resolve_pretty_version(
         pretty = f"Unstable (F{release}, #{sha_short})"
     elif ref_name == "testing":
         pretty = f"Testing (F{release}, #{sha_short})"
+    elif ref_name == "brave-candidate":
+        pretty = f"Brave candidate (F{release}, #{sha_short})"
     else:
         pretty = f"Stable (F{release})"
     return pretty

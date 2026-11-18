@@ -39,11 +39,15 @@ on:
         description: "Space-separated images to build instead of build.py's DEFAULT_BUILD_IMAGES. Skips the release."
         type: string
         required: true
+      brave_evr:
+        description: "Minimum Brave Origin RPM EVR for a browser-only candidate."
+        type: string
+        default: ""
 
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}${{ inputs.brave_evr != '' && '-brave-candidate' || '' }}
   cancel-in-progress: true
 
 env:
@@ -88,7 +92,13 @@ jobs:
         run: echo "matrix=$(./build.py matrix --images "${REQUESTED_IMAGES}")" >> "$GITHUB_OUTPUT"
       - name: Generate version tag
         id: version
+        env:
+          BRAVE_EVR: ${{ inputs.brave_evr }}
         run: |
+          if [[ -n "$BRAVE_EVR" ]]; then
+            echo "version=$(date -u +%Y%m%d).${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           ./build.py version \
             --ref-name "${{ github.ref_name }}" \
             --push-registry "ghcr.io/${REPO_OWNER,,}" \
@@ -147,15 +157,24 @@ jobs:
       # compute-matrix, so it's the same for every image in the run.
       - name: Resolve build config
         id: resolve
+        env:
+          BRAVE_EVR: ${{ inputs.brave_evr }}
+          FEDORA_VERSION: ${{ matrix.fedora_version }}
+          RELEASE_VERSION: ${{ needs.compute-matrix.outputs.version }}
         run: |
+          ref_name="$GITHUB_REF_NAME"
+          if [[ -n "$BRAVE_EVR" ]]; then
+            ref_name=brave-candidate
+            RELEASE_VERSION="brave-candidate-${FEDORA_VERSION}.${RELEASE_VERSION}"
+          fi
           ./build.py -v resolve \
             --image "${{ matrix.image }}" \
-            --ref-name "${{ github.ref_name }}" \
+            --ref-name "$ref_name" \
             --sha "${{ github.sha }}" \
             --pr-number "${{ github.event.pull_request.number }}" \
             --image-vendor "${{ steps.repo_owner_case.outputs.lowercase }}" \
             --push-registry "ghcr.io/${{ steps.repo_owner_case.outputs.lowercase }}" \
-            --version "${{ needs.compute-matrix.outputs.version }}" \
+            --version "$RELEASE_VERSION" \
             > resolved.json
           jq . resolved.json
 
@@ -371,6 +390,23 @@ jobs:
       - name: Run goss tests
         run: ./build.py test --ref "${{ steps.rechunk.outputs.ref }}"
 
+      - name: Check candidate contains the requested Brave update
+        if: inputs.brave_evr != ''
+        env:
+          BRAVE_EVR: ${{ inputs.brave_evr }}
+          BUILD_REF: ${{ steps.rechunk.outputs.ref }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          installed=$(podman run --rm --network=none --entrypoint rpm \
+            "${BUILD_REF#containers-storage:}" -q --qf '%{EPOCHNUM}:%{VERSION}-%{RELEASE}\n' brave-origin)
+          source .github/scripts/brave-rpm.sh
+          comparison=$(brave_compare "$BRAVE_EVR" "$installed")
+          if [[ "$comparison" == 1 ]]; then
+            echo "::error::Built Brave Origin $installed is older than requested $BRAVE_EVR"
+            exit 1
+          fi
+
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
@@ -393,7 +429,7 @@ jobs:
             ./build.py push \
               --output-image "${{ steps.resolve.outputs.output_image }}" \
               --version "${{ steps.resolve.outputs.version }}" \
-              --alias-tags "${{ steps.resolve.outputs.alias_tags }}" \
+              --alias-tags "${{ inputs.brave_evr == '' && steps.resolve.outputs.alias_tags || '' }}" \
               --rechunk-ref "${{ steps.rechunk.outputs.ref }}" \
               > push.json
             digest="$(jq -er .digest push.json)"
@@ -446,6 +482,13 @@ jobs:
           subject-name: ${{ steps.resolve.outputs.output_image }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+      - name: Promote verified browser candidate
+        if: inputs.brave_evr != ''
+        env:
+          IMAGE: ${{ steps.resolve.outputs.output_image }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: skopeo copy --preserve-digests "docker://${IMAGE}@${DIGEST}" "docker://${IMAGE}:brave-candidate"
 
       - name: Final image size summary
         if: always() && steps.rechunk.outcome == 'success'
