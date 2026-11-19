@@ -21,8 +21,12 @@ test -s /usr/lib/opt/brave.com/brave-origin/LICENSE
 # GNOME images use the GNOME keyring; Deck images don't ship Hyprland.
 if [[ "${BASE_IMAGE_NAME}" == kinoite && "${IMAGE_NAME}" != *deck* ]]; then
     wrapper=/usr/lib/opt/brave.com/brave-origin/brave-origin
+    # Match literal shell code; $HERE and $@ expand in Brave's wrapper at launch.
+    # shellcheck disable=SC2016
     test "$(grep -cF '"$HERE/brave" "$@" || true' "$wrapper")" -eq 1
+    # shellcheck disable=SC2016
     sed -i 's/^"\$HERE\/brave" "\$@" || true$/"$HERE\/brave" --password-store=kwallet6 "$@" || true/' "$wrapper"
+    # shellcheck disable=SC2016
     grep -Fxq '"$HERE/brave" --password-store=kwallet6 "$@" || true' "$wrapper"
 fi
 
