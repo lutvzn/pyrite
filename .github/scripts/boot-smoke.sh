@@ -110,14 +110,14 @@ boot_id=$(wait_for_boot "$boot_id")
 candidate_checksum=$(assert_deployment "$candidate")
 echo "Booted candidate: $candidate ($candidate_checksum)"
 
-ssh_vm bash -s > "$logs/brave-sandbox.html" <<'GUEST'
-set -eu
-profile=$(mktemp -d)
-trap 'rm -rf "$profile"' EXIT
-timeout 90 brave-origin-stable --headless --disable-gpu --no-first-run --allow-chrome-scheme-url \
-    --user-data-dir="$profile" --dump-dom brave://sandbox
-GUEST
-grep -F 'You are adequately sandboxed.' "$logs/brave-sandbox.html" > /dev/null
+# Brave Origin ignores --dump-dom, so the check reads the page over DevTools.
+if ! ssh_vm python3 - < "$(dirname "$0")/brave-sandbox-check.py" \
+    > "$logs/brave-sandbox.txt" 2> "$logs/brave-sandbox.log"; then
+    echo 'Brave sandbox check failed:' >&2
+    tail -n 20 "$logs/brave-sandbox.log" >&2
+    exit 1
+fi
+echo 'Brave Origin is sandboxed'
 
 root_vm rpm-ostree rollback
 root_vm systemd-run --on-active=2s systemctl reboot
