@@ -57,3 +57,31 @@ if ! grep -q 'brew trust ublue-os/tap' "$f"; then
         fail "$f wasn't patched"
 fi
 python3 -c 'import ast, sys; ast.parse(open(sys.argv[1]).read())' "$f"
+
+# Ignore transient KSplash activation failures (KDE bug 526620) and startup
+# sound failures in FUMonitor's startup scan and live notifications.
+f=/usr/bin/fumon
+if [[ -f "$f" ]]; then
+    # shellcheck disable=SC2016
+    sed -i \
+        -e '/^check_failed_units() {$/i\
+ignore_unit() {\
+    case "$1" in\
+        dbus-:*-org.kde.KSplash@*.service|dbus-_3a*-org.kde.KSplash@*.service) return 0 ;;\
+        plasma-startupsound.service) return 0 ;;\
+        *) return 1 ;;\
+    esac\
+}
+' \
+        -e '/^[[:blank:]]*\[ -n "\$line" \] || continue$/a\		ignore_unit "$line" \&\& continue' \
+        -e '/^[[:blank:]]*if \[ "\$COUNTER" -gt "1" \]; then$/i\	[ "$COUNTER" -gt 0 ] || return 0' \
+        -e '/^[[:blank:]]*if list_contains "${FAILED_UNITS}" "\$UNIT"; then$/i\	ignore_unit "$UNIT" \&\& continue' \
+        "$f"
+    if ! grep -qxF 'ignore_unit() {' "$f" ||
+        ! grep -qxF $'\t\tignore_unit "$line" && continue' "$f" ||
+        ! grep -qxF $'\t[ "$COUNTER" -gt 0 ] || return 0' "$f" ||
+        ! grep -qxF $'\tignore_unit "$UNIT" && continue' "$f"; then
+        fail "$f wasn't patched"
+    fi
+    sh -n "$f"
+fi

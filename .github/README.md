@@ -82,6 +82,7 @@ Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fe
 
 - On KDE desktop images, Brave Origin uses KWallet 6 in both Plasma and Hyprland so switching desktops doesn't change the key used for website login cookies.
 - Foot's server starts at KDE Plasma, GNOME, and Hyprland Wayland login and stops at logout. Launch **Foot Client** to open a terminal on the server; Hyprland's default <kbd>Super</kbd>+<kbd>Q</kbd> shortcut uses it.
+- FUMonitor ignores failures from `plasma-startupsound.service` and transient `org.kde.KSplash` D-Bus activations ([KDE bug 526620](https://bugs.kde.org/show_bug.cgi?id=526620)). The services and systemd journal are unchanged.
 - Uses the [OGC kernel](https://www.github.com/OpenGamingCollective/linux)
 - HDR and VRR available by default.
 - Full hardware accelerated codec support for H264 decoding.
