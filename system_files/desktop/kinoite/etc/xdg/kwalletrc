@@ -1,0 +1,9 @@
+# oo7 provides the Secret Service on Pyrite. kwalletd6 only passes the KWallet
+# API through to it, and ksecretd, KWallet's own Secret Service, stays off so
+# it can't take the org.freedesktop.secrets name from oo7. Wallets are imported
+# by oo7 and pyrite-kwallet-import, not by kwalletd's [Migration] option.
+[KSecretD]
+Enabled=false
+
+[org.freedesktop.secrets]
+apiEnabled=false

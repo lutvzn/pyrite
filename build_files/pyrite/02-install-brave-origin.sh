@@ -17,17 +17,17 @@ test -x /usr/lib/opt/brave.com/brave-origin/brave
 test -u /usr/lib/opt/brave.com/brave-origin/chrome-sandbox
 test -s /usr/lib/opt/brave.com/brave-origin/LICENSE
 
-# Keep the cookie encryption key consistent between Plasma and Hyprland.
-# GNOME images use the GNOME keyring; Deck images don't ship Hyprland.
-if [[ "${BASE_IMAGE_NAME}" == kinoite && "${IMAGE_NAME}" != *deck* ]]; then
-    wrapper=/usr/lib/opt/brave.com/brave-origin/brave-origin
-    # Match literal shell code; $HERE and $@ expand in Brave's wrapper at launch.
-    # shellcheck disable=SC2016
-    test "$(grep -cF '"$HERE/brave" "$@" || true' "$wrapper")" -eq 1
-    # shellcheck disable=SC2016
-    sed -i 's/^"\$HERE\/brave" "\$@" || true$/"$HERE\/brave" --password-store=kwallet6 "$@" || true/' "$wrapper"
-    # shellcheck disable=SC2016
-    grep -Fxq '"$HERE/brave" --password-store=kwallet6 "$@" || true' "$wrapper"
-fi
+# Brave picks KWallet on KDE and libsecret elsewhere, which would give it a
+# different cookie encryption key per desktop. Every image uses oo7 through
+# libsecret instead (see 08-configure-oo7.sh), so the key survives switching
+# desktops and rebasing between KDE and GNOME images.
+wrapper=/usr/lib/opt/brave.com/brave-origin/brave-origin
+# Match literal shell code; $HERE and $@ expand in Brave's wrapper at launch.
+# shellcheck disable=SC2016
+test "$(grep -cF '"$HERE/brave" "$@" || true' "$wrapper")" -eq 1
+# shellcheck disable=SC2016
+sed -i 's/^"\$HERE\/brave" "\$@" || true$/"$HERE\/brave" --password-store=gnome-libsecret "$@" || true/' "$wrapper"
+# shellcheck disable=SC2016
+grep -Fxq '"$HERE/brave" --password-store=gnome-libsecret "$@" || true' "$wrapper"
 
 rm -f /etc/yum.repos.d/brave-browser.repo

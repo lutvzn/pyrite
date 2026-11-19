@@ -66,11 +66,11 @@ Install Pyrite's public key and registry policy before the first rebase. This ad
 )
 ```
 
-Reboot after the rebase succeeds. Run `ujust pyrite-doctor` to see the booted image, rollback deployment, graphics drivers, active portals, and failed Pyrite services without changing the system.
+Reboot after the rebase succeeds. Run `ujust pyrite-doctor` to see the booted image, rollback deployment, graphics drivers, active portals, the Secret Service, and failed Pyrite services without changing the system.
 
 The [Brave Origin candidate workflow](workflows/brave-candidate.yml) checks Brave's RPM repository daily. It builds only variants with an update newer than both `stable` and any existing `brave-candidate`, using the package versions from their signed SBOMs. Candidates are full Pyrite rebuilds, not browser-only patches. The workflow verifies the image signature before moving `brave-candidate` and does not change `stable` or the weekly distro build.
 
-Release aliases only move after signature verification. On the default branch, `pyrite-nvidia-open` also has to boot in a QEMU VM, rebase to the signed build, reach the display manager, pass Brave's sandbox check, and boot the previous deployment after rollback. This gate runs on Ubuntu 24.04 to avoid an [osbuild mount failure on the 26.04 runner](https://github.com/osbuild/osbuild/issues/2579). Other variants are not covered by this VM gate. Hyprland portal and keyring checks, Deck suspend/resume, and NVIDIA video acceleration still need interactive or hardware testing.
+Release aliases only move after signature verification. On the default branch, `pyrite-nvidia-open` also has to boot in a QEMU VM, rebase to the signed build, reach the display manager, pass Brave's sandbox check, and boot the previous deployment after rollback. This gate runs on Ubuntu 24.04 to avoid an [osbuild mount failure on the 26.04 runner](https://github.com/osbuild/osbuild/issues/2579). Other variants are not covered by this VM gate. Hyprland portal checks, keyring unlocking and the KWallet import, Deck suspend/resume, and NVIDIA video acceleration still need interactive or hardware testing.
 
 ## About & Features
 
@@ -80,7 +80,7 @@ Pyrite is a fork of [Bazzite](https://bazzite.gg/), a custom [Fedora Atomic](htt
 
 Pyrite is built from [ublue-os/main](https://github.com/ublue-os/main) using [Fedora](https://fedoraproject.org/) technology, which means expanded hardware support and built in drivers are included. Additionally, Pyrite adds the following features:
 
-- On KDE desktop images, Brave Origin uses KWallet 6 in both Plasma and Hyprland so switching desktops doesn't change the key used for website login cookies.
+- Every image stores passwords and other secrets in [oo7](https://github.com/linux-credentials/oo7), which Fedora already uses on GNOME. Switching between Plasma, GNOME and Hyprland, or rebasing between KDE and GNOME images, keeps the same keyring, so Brave Origin keeps you logged in to websites. The login password unlocks it. On KDE, KDE apps reach oo7 through the KWallet API. At the first login, existing KWallet entries are copied into it, including Brave Origin's cookie keys. Any secret they replace is kept as a backup entry labelled "(replaced by KWallet import)".
 - Foot's server starts at KDE Plasma, GNOME, and Hyprland Wayland login and stops at logout. Launch **Foot Client** to open a terminal on the server; Hyprland's default <kbd>Super</kbd>+<kbd>Q</kbd> shortcut uses it.
 - FUMonitor ignores failures from `plasma-startupsound.service` and transient `org.kde.KSplash` D-Bus activations ([KDE bug 526620](https://bugs.kde.org/show_bug.cgi?id=526620)). The services and systemd journal are unchanged.
 - Uses the [OGC kernel](https://www.github.com/OpenGamingCollective/linux)

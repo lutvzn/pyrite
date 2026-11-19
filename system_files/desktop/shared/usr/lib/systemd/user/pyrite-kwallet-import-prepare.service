@@ -1,0 +1,8 @@
+[Unit]
+Description=Prepare KWallet secrets for import into oo7
+# Started by oo7-daemon.service.d/pyrite-kwallet-import.conf.
+Before=oo7-daemon.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/pyrite-kwallet-import prepare

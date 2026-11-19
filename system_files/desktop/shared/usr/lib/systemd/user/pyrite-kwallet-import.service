@@ -1,0 +1,13 @@
+[Unit]
+Description=Import KWallet secrets into oo7
+# Left by pyrite-kwallet-import-prepare.service when a wallet needs importing.
+ConditionPathExists=%S/pyrite/kwallet-import-pending
+Wants=oo7-daemon.service
+After=oo7-daemon.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/pyrite-kwallet-import import
+
+[Install]
+WantedBy=graphical-session.target

@@ -112,6 +112,59 @@ command:
     stdout:
       - "/^OK:/"
 
+  # Every image keeps secrets in oo7, so they survive a rebase between KDE and
+  # GNOME images. See build_files/pyrite/08-configure-oo7.sh.
+  oo7_is_the_secret_service:
+    exec: |
+      sh -c '
+      base=$(jq -r ".\"base-image-name\" // empty" /usr/share/ublue-os/image-info.json 2>/dev/null)
+      if ! rpm -q oo7-daemon oo7-portal pam_oo7 python3-secretstorage > /dev/null; then
+        echo "FAIL: oo7 or python3-secretstorage is not installed"
+        exit 1
+      fi
+      if rpm -q gnome-keyring > /dev/null 2>&1; then
+        echo "FAIL: gnome-keyring is installed and would compete with oo7"
+        exit 1
+      fi
+      if [ ! -e /etc/systemd/user/graphical-session-pre.target.wants/oo7-daemon.service ]; then
+        echo "FAIL: oo7-daemon.service does not start with graphical sessions"
+        exit 1
+      fi
+      if [ ! -e /etc/systemd/user/graphical-session.target.wants/pyrite-kwallet-import.service ]; then
+        echo "FAIL: pyrite-kwallet-import.service is not enabled"
+        exit 1
+      fi
+      if ! grep -Eq "^-password[[:blank:]]+optional[[:blank:]]+pam_oo7\.so use_authtok$" /etc/pam.d/passwd; then
+        echo "FAIL: /etc/pam.d/passwd does not update the oo7 keyring password"
+        exit 1
+      fi
+      if ! grep -Fq -- "--password-store=gnome-libsecret" /usr/lib/opt/brave.com/brave-origin/brave-origin; then
+        echo "FAIL: Brave Origin does not use libsecret"
+        exit 1
+      fi
+      case "$base" in
+        kinoite)
+          if rpm -q pam-kwallet > /dev/null 2>&1; then
+            echo "FAIL: pam-kwallet is installed and would start ksecretd"
+            exit 1
+          fi
+          if ! grep -qx "org.freedesktop.impl.portal.Secret=oo7-portal" /usr/share/xdg-desktop-portal/kde-portals.conf; then
+            echo "FAIL: Plasma does not use the oo7 Secret portal"
+            exit 1
+          fi
+          ;;
+        silverblue) ;;
+        *)
+          echo "FAIL: unknown base image ${base:-(none)}"
+          exit 1
+          ;;
+      esac
+      echo "OK: oo7 provides the Secret Service on this $base image"
+      '
+    exit-status: 0
+    stdout:
+      - "/^OK:/"
+
 file:
   /usr/lib/os-release:
     exists: true
@@ -134,6 +187,20 @@ file:
     exists: true
     mode: "4755"
     owner: root
+
+  /usr/share/dbus-1/services/org.freedesktop.secrets.service:
+    exists: true
+    contents:
+      - "/^SystemdService=dbus-org.freedesktop.secrets.service$/"
+
+  /usr/libexec/pyrite-kwallet-import:
+    exists: true
+    mode: "0755"
+
+  /etc/xdg-desktop-portal/hyprland-portals.conf:
+    exists: true
+    contents:
+      - "/^org.freedesktop.impl.portal.Secret=oo7-portal$/"
 
   /usr/lib/tmpfiles.d/pyrite-brave.conf:
     exists: true

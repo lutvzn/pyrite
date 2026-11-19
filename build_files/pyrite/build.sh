@@ -18,3 +18,4 @@ echo "--- Starting Pyrite build ---"
 /ctx/pyrite/05-install-brew-proxy.sh
 /ctx/pyrite/06-finalize.sh
 /ctx/pyrite/07-patch-upstream-files.sh
+/ctx/pyrite/08-configure-oo7.sh

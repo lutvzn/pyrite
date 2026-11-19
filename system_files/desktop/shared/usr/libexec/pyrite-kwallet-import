@@ -1,0 +1,186 @@
+#!/usr/bin/python3
+"""Copy KWallet secrets into oo7's default keyring.
+
+oo7-daemon imports each ~/.local/share/kwalletd/<wallet>.kwl into a keyring of
+its own the first time it unlocks with the login password. It then marks the
+file with <wallet>.kwl.migrated and doesn't read it again. That copy isn't
+enough on its own: kwalletd6 only reads the default keyring, and Brave looks
+up its cookie keys by libsecret and Secret portal attributes, not KWallet's.
+
+prepare runs before oo7-daemon starts. If a wallet changed since oo7 last
+imported it, for example after booting an older KDE image, it moves oo7's
+stale copy aside so oo7 imports the wallet again. Wallets older than oo7's
+login keyring are skipped, because the user has kept using oo7 since.
+
+import runs once oo7 is unlocked. It copies every imported item into the
+default keyring, adds Brave's keys in the form Brave looks for, and stores
+any secret it replaces as a backup item. If a keyring is still locked it
+leaves the work for the next login instead of prompting.
+"""
+
+import base64
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+
+def xdg_dir(variable, default):
+    value = os.environ.get(variable)
+    if value and os.path.isabs(value):
+        return Path(value)
+    return Path.home() / default
+
+
+DATA_DIR = xdg_dir("XDG_DATA_HOME", ".local/share")
+STATE_DIR = xdg_dir("XDG_STATE_HOME", ".local/state") / "pyrite"
+KWALLET_DIR = DATA_DIR / "kwalletd"
+KEYRING_DIR = DATA_DIR / "keyrings" / "v1"
+LOGIN_KEYRING = KEYRING_DIR / "login.keyring"
+# Keep these names in sync with pyrite-kwallet-import.service.
+PENDING = STATE_DIR / "kwallet-import-pending"
+IMPORTED = STATE_DIR / "kwallet-imported"
+
+# Brave keeps its cookie password in KWallet under Brave Keys/Brave Safe
+# Storage, and in libsecret under these attributes.
+BRAVE_KWALLET = {"server": "Brave Keys", "user": "Brave Safe Storage"}
+BRAVE_LIBSECRET = {
+    "xdg:schema": "chrome_libsecret_os_crypt_password_v2",
+    "application": "brave",
+}
+# KWallet's Secret portal keeps one token per app ID in this folder. oo7-portal
+# looks tokens up by app_id instead.
+PORTAL_FOLDER = "xdg-desktop-portal"
+
+
+def log(message):
+    print(message, file=sys.stderr, flush=True)
+
+
+def mtime(path):
+    try:
+        return path.stat().st_mtime
+    except FileNotFoundError:
+        return None
+
+
+def prepare():
+    newer = []
+    for wallet in sorted(KWALLET_DIR.glob("*.kwl")):
+        changed = mtime(wallet)
+        if changed is None:
+            continue
+        if any(t is not None and t >= changed for t in (mtime(LOGIN_KEYRING), mtime(IMPORTED))):
+            continue
+        newer.append(wallet)
+    if not newer:
+        return
+
+    suffix = time.strftime("%Y%m%d-%H%M%S")
+    for wallet in newer:
+        stale = KEYRING_DIR / f"{wallet.stem}.keyring"
+        if stale.exists():
+            backup = stale.with_name(f"{stale.name}.pyrite-{suffix}.bak")
+            stale.rename(backup)
+            log(f"Moved oo7's older copy of {wallet.name} to {backup}")
+        wallet.with_name(f"{wallet.name}.migrated").unlink(missing_ok=True)
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    PENDING.write_text("".join(f"{wallet.stem}\n" for wallet in newer))
+    log(f"oo7 will import {', '.join(w.name for w in newer)} when it unlocks")
+
+
+def unlocked_collection(secretstorage, connection, alias, timeout):
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            collection = secretstorage.get_collection_by_alias(connection, alias)
+            if not collection.is_locked():
+                return collection
+        except secretstorage.exceptions.ItemNotFoundException:
+            pass
+        if time.monotonic() >= deadline:
+            return None
+        time.sleep(1)
+
+
+def store(collection, attributes, label, secret, content_type, match=None):
+    """Store a secret, backing up any different secret stored under match."""
+    existing = list(collection.search_items(match or attributes))
+    if any(item.get_secret() == secret for item in existing):
+        return
+    replaced_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    for item in existing:
+        old_label = item.get_label()
+        collection.create_item(
+            f"{old_label} (replaced by KWallet import)",
+            {
+                "pyrite:replaced-by-kwallet-import": json.dumps(item.get_attributes(), sort_keys=True),
+                "pyrite:replaced-at": replaced_at,
+            },
+            item.get_secret(),
+            content_type=item.get_secret_content_type(),
+        )
+        item.delete()
+        log(f"Backed up and replaced '{old_label}'")
+    collection.create_item(label, attributes, secret, replace=True, content_type=content_type)
+
+
+def import_wallets():
+    if not PENDING.exists():
+        return
+    wallets = [line.strip() for line in PENDING.read_text().splitlines() if line.strip()]
+
+    import secretstorage
+
+    connection = secretstorage.dbus_init()
+    default = unlocked_collection(secretstorage, connection, "default", 30)
+    if default is None:
+        log("oo7's default keyring is locked or missing, retrying at the next login")
+        return
+    sources = []
+    for wallet in wallets:
+        # oo7 names the imported keyring's alias after the lowercased file name.
+        collection = unlocked_collection(secretstorage, connection, wallet.lower(), 10)
+        if collection is None:
+            log(f"oo7 hasn't imported {wallet}.kwl yet, retrying at the next login")
+            return
+        sources.append((wallet, collection))
+
+    for wallet, collection in sources:
+        count = 0
+        for item in collection.get_all_items():
+            attributes = item.get_attributes()
+            label = item.get_label()
+            secret = item.get_secret()
+            content_type = item.get_secret_content_type()
+            # kwalletd6 finds entries in the default keyring by these attributes.
+            store(default, attributes, label, secret, content_type)
+            if BRAVE_KWALLET.items() <= attributes.items():
+                store(default, BRAVE_LIBSECRET, "Brave Safe Storage", secret, "text/plain",
+                      match={"application": BRAVE_LIBSECRET["application"]})
+            elif attributes.get("server") == PORTAL_FOLDER and attributes.get("user"):
+                app_id = attributes["user"]
+                token = base64.b64decode(secret) if attributes.get("type") == "base64" else secret
+                store(default, {"app_id": app_id}, f"Secret Portal token for {app_id}", token,
+                      "application/octet-stream")
+            count += 1
+        log(f"Copied {count} secrets from {wallet}.kwl into the default keyring")
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    IMPORTED.touch()
+    PENDING.unlink()
+
+
+def main():
+    commands = {"prepare": prepare, "import": import_wallets}
+    if len(sys.argv) != 2 or sys.argv[1] not in commands:
+        log(f"Usage: {sys.argv[0]} prepare|import")
+        return 2
+    commands[sys.argv[1]]()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

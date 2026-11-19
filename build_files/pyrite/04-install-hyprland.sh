@@ -8,9 +8,10 @@
 # Super+B to open the default browser, which the stock config has no bind for, and
 # starts the Noctalia shell, which comes from Fedora and only runs under Hyprland.
 # Noctalia also takes over the launcher and the volume, brightness and media keys.
-# It also unlocks KWallet on KDE images, which only Plasma does on its own. GNOME
-# images skip that step because the keyring is unlocked at login. Each image sets
-# its own Secret portal in /etc/xdg-desktop-portal/hyprland-portals.conf.
+# It also starts oo7 and the KWallet import, which sessions that uwsm doesn't
+# manage would otherwise only start on first use, after pam_oo7 has dropped the
+# login password. /etc/xdg-desktop-portal/hyprland-portals.conf uses oo7's Secret
+# portal on every image.
 #
 # Needs 01-pin-xwayland.sh to have run first.
 #
@@ -42,7 +43,7 @@ mkdir -p /etc/xdg/hypr
 sed -e 's/^local terminal .*/local terminal    = "footclient"/' \
     -e 's/^local menu .*/local menu        = "noctalia msg panel-toggle launcher"/' \
     -e '/^hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))$/a hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("gtk-launch \\"$(xdg-settings get default-web-browser)\\""))' \
-    -e '/^-- end)$/a hl.on("hyprland.start", function() hl.exec_cmd("test -x /usr/libexec/pam_kwallet_init \&\& /usr/libexec/pam_kwallet_init") hl.exec_cmd("noctalia") end)' \
+    -e '/^-- end)$/a hl.on("hyprland.start", function() hl.exec_cmd("systemctl --user start oo7-daemon.service pyrite-kwallet-import.service") hl.exec_cmd("noctalia") end)' \
     -e '/^hl.bind("XF86AudioRaiseVolume"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-up")/' \
     -e '/^hl.bind("XF86AudioLowerVolume"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-down")/' \
     -e '/^hl.bind("XF86AudioMute"/s/exec_cmd("[^"]*")/exec_cmd("noctalia msg volume-mute")/' \
@@ -57,7 +58,7 @@ sed -e 's/^local terminal .*/local terminal    = "footclient"/' \
 grep -q '^local terminal    = "footclient"$' /etc/xdg/hypr/hyprland.lua
 grep -q 'mainMod .. " + B"' /etc/xdg/hypr/hyprland.lua
 test "$(grep -c '^hl.on("hyprland.start"' /etc/xdg/hypr/hyprland.lua)" -eq 1
-grep -qF 'test -x /usr/libexec/pam_kwallet_init && /usr/libexec/pam_kwallet_init' /etc/xdg/hypr/hyprland.lua
+grep -qF 'hl.exec_cmd("systemctl --user start oo7-daemon.service pyrite-kwallet-import.service")' /etc/xdg/hypr/hyprland.lua
 test "$(grep -c 'noctalia msg' /etc/xdg/hypr/hyprland.lua)" -eq 11
 if grep -qE 'wpctl|brightnessctl|playerctl|hyprlauncher' /etc/xdg/hypr/hyprland.lua; then
     echo "ERROR: /etc/xdg/hypr/hyprland.lua still calls a tool Noctalia replaces" >&2

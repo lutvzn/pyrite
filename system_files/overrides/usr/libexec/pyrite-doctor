@@ -30,6 +30,10 @@ $found || echo '  none detected'
 printf '\nActive desktop portals (%s):\n' "${XDG_CURRENT_DESKTOP:-no desktop identified}"
 if bus=$(busctl --user --acquired --no-pager --no-legend list 2>/dev/null); then
     awk '$1 ~ /^(org\.freedesktop\.portal\.Desktop|org\.freedesktop\.impl\.portal\.desktop\..+)$/ {print "  " $1; found=1} END {if (!found) print "  none active"}' <<< "$bus"
+    # oo7-daemon should own the name; ksecretd or gnome-keyring here means
+    # secrets are going somewhere other images can't read.
+    printf '\nSecret Service: '
+    awk '$1 == "org.freedesktop.secrets" {print $3 " (PID " $2 ")"; found=1} END {if (!found) print "not running"}' <<< "$bus"
 else
     echo '  user bus unavailable'
 fi

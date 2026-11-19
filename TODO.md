@@ -8,7 +8,10 @@
 - [ ] Blocked kernel modules: confirm nothing needs them, especially `sctp`.
 
 - [ ] Hyprland: log in on a GNOME image, then check screen sharing and file pickers. Also check that KDE and GNOME's own sessions still use their usual portals.
-- [ ] Hyprland passwords: log out and back in on KDE and GNOME images. Check that `busctl --user status org.freedesktop.secrets` finds the service without a password prompt, that a saved password survives a new login, and that a Flatpak app can save one too. Also check the uwsm session.
+- [ ] oo7 on KDE: update a KDE install that used KWallet. At the first Plasma login, check that `ujust pyrite-doctor` shows `oo7-daemon` as the Secret Service without a password prompt, `journalctl --user -u pyrite-kwallet-import` copied the wallet, Brave Origin is still logged in to websites, and a saved Wi-Fi password and a Flatpak app's password still work. Then check that `secret-tool search application brave` finds Brave's key.
+- [ ] oo7 rebase: rebase that install to a GNOME image and back, and check that Brave Origin stays logged in each time. Also try Hyprland, with and without uwsm, on both images.
+- [ ] oo7 prompts: lock the keyring with `secret-tool lock` and unlock it from Brave Origin in Plasma, Hyprland and GNOME, to see which password dialog appears. Also check Game Mode's autologin on Deck images.
+- [ ] oo7 password change: change the password with `passwd` while logged in, log out and back in, and check that the keyring still unlocks.
 - [ ] Noctalia: log in to Hyprland and check that the bar starts, and that notifications, the lock screen and the battery and power widgets work. Try Super+R and the volume, mic, brightness and media keys, including on the lock screen. Also check that it doesn't start in KDE or GNOME sessions.
 
 - [ ] brew-proxy updates: run `ujust update` and check that `uupd` still updates brew now that `linuxbrew` owns it. Then run `sudo systemctl start brew-upgrade.service` and check its status. Also check why `brew-update.timer` and `brew-upgrade.timer` are disabled.
