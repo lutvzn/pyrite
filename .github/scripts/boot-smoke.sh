@@ -44,8 +44,9 @@ password = "$password"
 key = "$(cat "$work/id.pub")"
 groups = ["wheel"]
 
-[customizations.services]
-enabled = ["sshd.service"]
+# Disk blueprints support kernel arguments, not customizations.services.
+[customizations.kernel]
+append = "systemd.wants=sshd.service console=ttyS0"
 
 [[customizations.filesystem]]
 mountpoint = "/"
@@ -58,7 +59,8 @@ sudo podman run --rm --privileged \
     --volume "$work/output:/output" \
     --volume /var/lib/containers/storage:/var/lib/containers/storage \
     quay.io/centos-bootc/bootc-image-builder@sha256:dab86ee6b46dcade411b37f4e70b07d93b6a06da0dbfec6fe89247a220e0d9f8 \
-    --type qcow2 --rootfs btrfs --chown "$(id -u):$(id -g)" "$image@$stable"
+    --type qcow2 --rootfs btrfs --chown "$(id -u):$(id -g)" "$image@$stable" \
+    2>&1 | tee "$logs/disk-build.log"
 
 accel=(-accel 'tcg,thread=multi' -cpu max)
 if [[ -e /dev/kvm ]]; then

@@ -70,7 +70,7 @@ Reboot after the rebase succeeds. Run `ujust pyrite-doctor` to see the booted im
 
 The [Brave Origin candidate workflow](workflows/brave-candidate.yml) checks Brave's RPM repository daily. It builds only variants with an update newer than both `stable` and any existing `brave-candidate`, using the package versions from their signed SBOMs. Candidates are full Pyrite rebuilds, not browser-only patches. The workflow verifies the image signature before moving `brave-candidate` and does not change `stable` or the weekly distro build.
 
-Release aliases only move after signature verification. On the default branch, `pyrite-nvidia-open` also has to boot in a QEMU VM, rebase to the signed build, reach the display manager, pass Brave's sandbox check, and boot the previous deployment after rollback. Other variants are not covered by this VM gate. Hyprland portal and keyring checks, Deck suspend/resume, and NVIDIA video acceleration still need interactive or hardware testing.
+Release aliases only move after signature verification. On the default branch, `pyrite-nvidia-open` also has to boot in a QEMU VM, rebase to the signed build, reach the display manager, pass Brave's sandbox check, and boot the previous deployment after rollback. This gate runs on Ubuntu 24.04 to avoid an [osbuild mount failure on the 26.04 runner](https://github.com/osbuild/osbuild/issues/2579). Other variants are not covered by this VM gate. Hyprland portal and keyring checks, Deck suspend/resume, and NVIDIA video acceleration still need interactive or hardware testing.
 
 ## About & Features
 
